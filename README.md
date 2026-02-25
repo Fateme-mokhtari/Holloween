@@ -1,2 +1,36 @@
-# Holloween
-Interactive map application for Halloween scare zones built with Next.js, React, and Leaflet. Features real-time house location data and emoji markers.  
+# Halloween Scare Zones Map
+
+A Next.js web application for mapping and showcasing Halloween scare zones and haunted houses.
+
+## Features
+
+- 🎃 Interactive map with house locations
+- 👻 Real-time house data fetching
+- 📍 Pumpkin emoji markers for easy identification
+- 🎨 Responsive design with Tailwind CSS
+- 🗺️ Leaflet.js integration
+
+## Tech Stack
+
+- Next.js 16.1.6
+- React
+- Tailwind CSS
+- Leaflet
+- TypeScript
+
+## Getting Started
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+## Project Status
+
+🚧 **In Development** - More features coming soon!
+
+## License
+
+MIT
