@@ -22,12 +22,14 @@ interface MapProps {
 
 export default function Map({ houses, zones, center }: MapProps) {
   return (
-    <div className="h-[100vh] w-full rounded-lg overflow-hidden border-4 border-orange-600 shadow-2xl">
+    <div className="h-[calc(100vh-60px)] w-full overflow-hidden ">
       <MapContainer 
         center={[center.lat, center.lng]}
         zoom={15}
         style={{ height: "100vh", width: "100%" }}
+        className="filter hue-rotate-60 saturate-120 brightness-90"
       >
+        {/* lighter OSM tiles with a slight color shift for atmosphere */}
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; OpenStreetMap'

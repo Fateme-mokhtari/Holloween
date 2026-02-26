@@ -25,8 +25,8 @@ export default function SpookyMap({ houses, zones }: SpookyMapProps) {
     : { lat: 51.98, lng: 4.58 };
 
   return (
-    <div className="h-screen w-full relative">
+   
       <Map houses={houses} zones={zones} center={center} />
-    </div>
+ 
   );
 }
