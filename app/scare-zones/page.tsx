@@ -3,17 +3,14 @@ import { getAllHouses } from "@/lib/apiHouses";
 import { getAllZones } from "@/lib/apiZones";
 
 import { Suspense } from "react";
+import TopMenu from "../components/TopMenu";
 
 export default async function ScareZonesPage() {
-
-  const [houses, zones] = await Promise.all([
-    getAllHouses(),
-    getAllZones(),
-  ]);
+  const [houses, zones] = await Promise.all([getAllHouses(), getAllZones()]);
 
   return (
     <>
-      <h1 className="text-4xl font-bold text-orange-500 mb-6">Scare Zones</h1>
+      <TopMenu />
       <Suspense
         fallback={
           <div className="h-screen bg-slate-950 flex items-center justify-center text-orange-500 animate-pulse">
