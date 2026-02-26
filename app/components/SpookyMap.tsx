@@ -1,8 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Houses } from "@/.next/types/houses";
-import { Zones } from "@/.next/types/zones";
+import { Houses } from "@/types/houses";
+import { Zones } from "@/types/zones";
 
 const Map = dynamic(() => import("./Map"), {
   ssr: false,

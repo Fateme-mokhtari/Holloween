@@ -3,7 +3,7 @@
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icons } from './MapIcons';
-import { Zones } from '@/.next/types/zones';
+import { Zones } from '@/types/zones';
 
 interface House {
   id: number;

@@ -1,4 +1,4 @@
-import { Zones } from '@/.next/types/zones';
+import { Zones } from '@/types/zones';
 import { apiClient } from './apiClient';
 
 
