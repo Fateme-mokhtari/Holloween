@@ -7,7 +7,11 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        halloween: ['"Henny Penny"', 'system-ui'],
+      },
+    },
   },
   plugins: [],
 };

@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Henny+Penny&display=swap');
 @import "tailwindcss";
 
+/* halloween font variable used by custom utility */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-halloween: "Henny Penny", system-ui;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -40,6 +43,14 @@ a {
     color-scheme: dark;
   }
 }
+
+/* custom utility that uses the variable defined above */
+@layer utilities {
+  .font-halloween {
+    font-family: var(--font-halloween);
+  }
+}
+
 .leaflet-div-icon {
   background: transparent !important;
   border: none !important;
