@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icons } from './MapIcons';
 import { Zones } from '@/types/zones';
+import MapButton from './MapButton';
 
 interface House {
   id: number;
@@ -22,17 +23,21 @@ interface MapProps {
 
 export default function Map({ houses, zones, center }: MapProps) {
   return (
-    <div className="h-[calc(100vh-60px)] w-full overflow-hidden ">
+    <div className="h-[calc(100vh-60px)] w-full overflow-hidden relative">
+      <div className="absolute top-4 right-4 z-1000 flex gap-2">
+        <MapButton text="Mark a Hount" icon="+" onClick={() => console.log('Filter clicked')} />
+      
+      </div>
       <MapContainer 
         center={[center.lat, center.lng]}
         zoom={15}
         style={{ height: "100vh", width: "100%" }}
-        className="filter hue-rotate-60 saturate-120 brightness-90"
+    
       >
-        {/* lighter OSM tiles with a slight color shift for atmosphere */}
+        {/* Dark themed tiles */}
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap'
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
+          attribution='&copy; OpenStreetMap, &copy; CartoDB'
         />
 
         {/* Scare Zones */}
