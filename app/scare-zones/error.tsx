@@ -16,6 +16,7 @@ export default function ScareZonesError({ error, reset }: ErrorProps) {
           onClick={() => reset()}
           className="px-6 py-2 mt-4 bg-orange-700 hover:bg-orange-500 text-white rounded-full font-bold transition"
         >
+          
           Try again
         </button>
       </div>
