@@ -1,8 +1,9 @@
-import React from 'react';
+
+import { InputHTMLAttributes } from 'react';
 import { UseFormRegisterReturn, FieldError } from 'react-hook-form';
 
 interface TextFieldProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+  extends InputHTMLAttributes<HTMLInputElement> {
   register?: UseFormRegisterReturn;
   error?: FieldError;
   label?: string;
