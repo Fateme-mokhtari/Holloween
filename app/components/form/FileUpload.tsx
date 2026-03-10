@@ -1,39 +1,41 @@
 'use client';
 
-import React, { useRef } from 'react';
-import { FieldError } from 'react-hook-form';
+import React, { useRef, useState } from 'react';
 
 interface FileUploadProps {
-  register?: any;
-  error?: FieldError;
+  accept?: string;
+  multiple?: boolean;
   label?: string;
   icon?: React.ReactNode;
-  accept?: string;
-  name?: string;
+  error?: { message?: string };
+  onFileChange?: (files: FileList | null) => void;
 }
 
 export default function FileUpload({
-  register,
-  error,
+  accept,
+  multiple = true,
   label = 'Upload File',
   icon = '📎',
-  accept,
-  name,
+  error,
+  onFileChange,
 }: FileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [fileName, setFileName] = React.useState<string>('');
+  const [fileName, setFileName] = useState('');
 
   const handleClick = () => {
-    if (inputRef.current) {
-      inputRef.current.click();
-    }
+    inputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFileName(file.name);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setFileName(
+        files.length === 1 ? files[0].name : `${files.length} files selected`
+      );
+    } else {
+      setFileName('');
     }
+    onFileChange?.(files);
   };
 
   return (
@@ -41,12 +43,10 @@ export default function FileUpload({
       <input
         ref={inputRef}
         type="file"
-        name={name}
-        onChange={handleFileChange}
         accept={accept}
-        multiple
+        multiple={multiple}
         className="hidden"
-        {...(register || {})}
+        onChange={handleChange}
       />
       <button
         type="button"
@@ -56,9 +56,10 @@ export default function FileUpload({
         <span>{icon}</span>
         <span>{fileName || label}</span>
       </button>
-      {error && (
+      {error?.message && (
         <p className="text-red-500 text-sm mt-1">{error.message}</p>
       )}
     </div>
   );
 }
+
