@@ -1,9 +1,10 @@
-import React from 'react';
+import type { FormHTMLAttributes, ReactNode } from "react";
+
 
 interface FormProps
-  extends React.FormHTMLAttributes<HTMLFormElement> {
-  children: React.ReactNode;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  extends FormHTMLAttributes<HTMLFormElement> {
+  children: ReactNode;
+  onSubmit: NonNullable<FormHTMLAttributes<HTMLFormElement>["onSubmit"]>;
 }
 
 export default function Form({
