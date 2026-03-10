@@ -1,5 +1,7 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL;
 
+type ApiRequestOptions = RequestInit;
+
 const defaultHeaders = {
   'Content-Type': 'application/json',
   'pushToken': process.env.ADMIN_TOKEN, 
@@ -8,7 +10,7 @@ console.log('API Base URL:', BASE_URL);
 console.log('pushToken:', process.env.ADMIN_TOKEN);
 
 export const apiClient = {
-  async request(endpoint, options = {}) {
+  async request(endpoint: string, options: ApiRequestOptions = {}) {
     const url = `${BASE_URL}${endpoint}`;
     
     // For FormData, don't set Content-Type header - browser handles it automatically
@@ -62,11 +64,11 @@ export const apiClient = {
     return responseData;
   },
 
-  get(endpoint, options = {}) {
+  get(endpoint: string, options: ApiRequestOptions = {}) {
     return this.request(endpoint, { method: 'GET', ...options });
   },
 
-  post(endpoint, data, options = {}) {
+  post(endpoint: string, data: unknown, options: ApiRequestOptions = {}) {
     return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -74,7 +76,7 @@ export const apiClient = {
     });
   },
 
-  put(endpoint, data, options = {}) {
+  put(endpoint: string, data: unknown, options: ApiRequestOptions = {}) {
     return this.request(endpoint, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -82,11 +84,11 @@ export const apiClient = {
     });
   },
 
-  delete(endpoint, options = {}) {
+  delete(endpoint: string, options: ApiRequestOptions = {}) {
     return this.request(endpoint, { method: 'DELETE', ...options });
   },
 
-  postFormData(endpoint, formData, options = {}) {
+  postFormData(endpoint: string, formData: FormData, options: ApiRequestOptions = {}) {
     return this.request(endpoint, {
       method: 'POST',
       body: formData,
