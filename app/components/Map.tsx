@@ -5,6 +5,9 @@ import 'leaflet/dist/leaflet.css';
 import { Icons } from './MapIcons';
 import { Zones } from '@/types/zones';
 import MapButton from './MapButton';
+import Modal from './Modal';
+import { useState } from 'react';
+import { SubmitHouseForm } from '@/app/components/form';
 
 interface House {
   id: number;
@@ -22,10 +25,11 @@ interface MapProps {
 }
 
 export default function Map({ houses, zones, center }: MapProps) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="h-[calc(100vh-60px)] w-full overflow-hidden relative">
       <div className="absolute top-4 right-4 z-1000 flex gap-2">
-        <MapButton text="Mark a Hount" icon="+" onClick={() => console.log('Filter clicked')} />
+        <MapButton text="Mark a Hount" icon="+" onClick={() => setIsOpen(true)} />
       
       </div>
       <MapContainer 
@@ -74,7 +78,11 @@ export default function Map({ houses, zones, center }: MapProps) {
             </Popup>
           </Marker>
         ))}
+        <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <SubmitHouseForm center={center} onSuccess={() => setIsOpen(false)} />
+        </Modal>
       </MapContainer>
+
     </div>
   );
 }
