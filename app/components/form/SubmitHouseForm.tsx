@@ -131,6 +131,7 @@ console.log(result)
         type="datetime-local"
         error={errors.start_date}
         {...register('start_date')}
+        onClick={(e) => e.currentTarget.showPicker() }
       />
       <input type="hidden" {...register('house_latitude')} />
       <input type="hidden" {...register('house_longitude')} />
