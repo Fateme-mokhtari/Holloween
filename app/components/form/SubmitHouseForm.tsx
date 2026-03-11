@@ -10,7 +10,9 @@ import Form from './Form';
 import TextField from './TextField';
 import FileUpload from './FileUpload';
 import FormButton from './FormButton';
-
+import {
+  setSuccsessToast,
+} from "@/app/components/Toast";
 interface SubmitHouseFormProps {
   center: { lat: number; lng: number };
   onSuccess: () => void;
@@ -87,7 +89,8 @@ console.log(result)
       });
 
       if (response.result) {
-        alert('House submitted successfully!');
+     
+        setSuccsessToast('House submitted successfully!');
         reset();
         onSuccess();
       } else {
