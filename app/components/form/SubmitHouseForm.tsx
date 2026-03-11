@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { submitHouseSchema, SubmitHouseFormData } from '@/types/submitHouse';
 import { submitHouseAction } from '@/app/actions/submitHouseAction';
+import { geocodeHouseLocation } from '@/util/geocodeHouseLocation';
 import Form from './Form';
 import TextField from './TextField';
 import FileUpload from './FileUpload';
@@ -20,6 +21,7 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
   const {
     register,
     handleSubmit,
+    getValues,
     setValue,
     formState: { errors },
     reset,
@@ -29,12 +31,33 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
       house_number: '15',
       house_address: 'Tielensstraat',
       start_date: new Date().toISOString().slice(0, 16),
-      house_latitude: '51.981414',
-      house_longitude: '4.584386',
+      house_latitude: '',
+      house_longitude: '',
       photo: [],
       video: [],
     },
   });
+
+  const fillCoordinatesFromAddress = async () => {
+    const houseNumber = getValues('house_number');
+    const houseAddress = getValues('house_address');
+
+    if (!houseNumber?.trim() || !houseAddress?.trim()) {
+      return;
+    }
+
+    try {
+      const result = await geocodeHouseLocation(houseNumber, houseAddress);
+      if (!result) {
+        return;
+      }
+console.log(result)
+      setValue('house_latitude', String(result.lat), { shouldDirty: true });
+      setValue('house_longitude', String(result.lng), { shouldDirty: true });
+    } catch (error) {
+      console.error('Geocoding error:', error);
+    }
+  };
 
   const formatDate = (dateTimeLocal: string) => {
     if (!dateTimeLocal) return '';
@@ -84,13 +107,21 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
         label="House Number"
         placeholder="e.g., 15"
         error={errors.house_number}
-        {...register('house_number')}
+        {...register('house_number', {
+          onBlur: () => {
+            void fillCoordinatesFromAddress();
+          },
+        })}
       />
       <TextField
         label="House Address"
         placeholder="e.g., Tielensstraat"
         error={errors.house_address}
-        {...register('house_address')}
+        {...register('house_address', {
+          onBlur: () => {
+            void fillCoordinatesFromAddress();
+          },
+        })}
       />
       <TextField
         label="Start Date"
@@ -98,20 +129,8 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
         error={errors.start_date}
         {...register('start_date')}
       />
-      <TextField
-        label="Latitude (optional)"
-        type="number"
-        step="0.000001"
-        placeholder={center.lat.toString()}
-        {...register('house_latitude')}
-      />
-      <TextField
-        label="Longitude (optional)"
-        type="number"
-        step="0.000001"
-        placeholder={center.lng.toString()}
-        {...register('house_longitude')}
-      />
+      <input type="hidden" {...register('house_latitude')} />
+      <input type="hidden" {...register('house_longitude')} />
       <FileUpload
         label="Upload Photo"
         icon="+"
