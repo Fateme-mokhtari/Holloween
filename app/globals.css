@@ -55,3 +55,10 @@ a {
   background: transparent !important;
   border: none !important;
 }
+
+.house-popup .leaflet-popup-content {
+  margin: 0 !important;
+}
+.leaflet-popup-pane .leaflet-popup-content-wrapper {
+  padding: 0;
+}

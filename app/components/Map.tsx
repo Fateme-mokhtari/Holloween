@@ -8,8 +8,10 @@ import MapButton from './MapButton';
 import Modal from './Modal';
 import { useState } from 'react';
 import { SubmitHouseForm } from '@/app/components/form';
+import HousePopup from './HousePopup';
+import { Houses } from '@/types/houses';
 
-interface House {
+export interface House {
   id: number;
   number: string;
   address: string;
@@ -19,7 +21,7 @@ interface House {
 }
 
 interface MapProps {
-  houses: House[];
+  houses: Houses[];
   zones: Zones[];
   center: { lat: number; lng: number };
 }
@@ -71,10 +73,8 @@ export default function Map({ houses, zones, center }: MapProps) {
             position={[house.latitude, house.longitude]} 
             icon={Icons.Pumpkin}
           >
-            <Popup>
-              <div>
-                <h3>{house.address} {house.number}</h3>
-              </div>
+            <Popup className="house-popup" closeButton={false} minWidth={350} >
+              <HousePopup house={house}  />
             </Popup>
           </Marker>
         ))}
