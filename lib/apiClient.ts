@@ -6,8 +6,6 @@ const defaultHeaders = {
   'Content-Type': 'application/json',
   'pushToken': process.env.ADMIN_TOKEN, 
 };
-console.log('API Base URL:', BASE_URL);
-console.log('pushToken:', process.env.ADMIN_TOKEN);
 
 export const apiClient = {
   async request(endpoint: string, options: ApiRequestOptions = {}) {
@@ -18,20 +16,6 @@ export const apiClient = {
       ? { 'pushToken': process.env.ADMIN_TOKEN }
       : defaultHeaders;
 
-    console.log('=== API REQUEST ===');
-    console.log('URL:', url);
-    console.log('Method:', options.method || 'GET');
-    console.log('Headers:', headers);
-    
-    if (options.body instanceof FormData) {
-      console.log('FormData entries:');
-      for (let [key, value] of options.body.entries()) {
-        console.log(`  ${key}:`, value instanceof File ? `File(${value.name}, ${value.size} bytes)` : value);
-      }
-    } else if (options.body) {
-      console.log('Body:', options.body);
-    }
-
     let response;
     try {
       response = await fetch(url, {
@@ -39,25 +23,19 @@ export const apiClient = {
         ...options,
       });
     } catch (error) {
-      console.error('Fetch error:', error);
+      console.error(`[apiClient] Fetch failed for ${url}:`, error);
       throw error;
     }
-
-    console.log('=== API RESPONSE ===');
-    console.log('Status:', response.status, response.statusText);
-    console.log('Response headers:', Array.from(response.headers.entries()));
 
     let responseData;
     try {
       responseData = await response.json();
-      console.log('Response body:', responseData);
-    } catch (e) {
-      console.log('Response body (not JSON):', await response.text());
+    } catch {
       throw new Error(`API Error: ${response.status} - ${response.statusText}`);
     }
 
     if (!response.ok) {
-      console.error('Error response:', responseData);
+      console.error(`[apiClient] ${response.status} ${response.statusText}:`, responseData);
       throw new Error(`API Error: ${response.status} - ${JSON.stringify(responseData)}`);
     }
 

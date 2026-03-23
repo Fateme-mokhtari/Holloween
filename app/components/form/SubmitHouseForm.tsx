@@ -12,6 +12,7 @@ import FileUpload from './FileUpload';
 import FormButton from './FormButton';
 import {
   setSuccsessToast,
+  setErrorToast,
 } from "@/app/components/Toast";
 
 interface SubmitHouseFormProps {
@@ -54,11 +55,10 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
       if (!result) {
         return;
       }
-console.log(result)
       setValue('house_latitude', String(result.lat), { shouldDirty: true });
       setValue('house_longitude', String(result.lng), { shouldDirty: true });
     } catch (error) {
-      console.error('Geocoding error:', error);
+      setErrorToast('Failed to find coordinates for the given address.');
     }
   };
 
@@ -91,15 +91,14 @@ console.log(result)
 
       if (response.result) {
      
-        setSuccsessToast('House submitted successfully!');
+        setSuccsessToast('House submitted successfully! It will appear on the map once approved by an admin.');
         reset();
         onSuccess();
       } else {
-        alert(`Error: ${response.message || 'Unknown error'}`);
+        setErrorToast(response.message || 'Something went wrong. Please try again.');
       }
     } catch (error) {
-      console.error('Submission error:', error);
-      alert(`Failed to submit house: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setErrorToast(error instanceof Error ? error.message : 'Failed to submit house. Please try again.');
     } finally {
       setIsLoading(false);
     }
