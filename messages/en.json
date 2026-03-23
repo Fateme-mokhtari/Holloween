@@ -1,0 +1,28 @@
+{
+  "TopMenu": {
+    "title": "Scare Zones",
+    "admin": "Admin",
+    "refresh": "Refresh",
+    "switchToNl": "Switch to Dutch",
+    "switchToEn": "Switch to English"
+  },
+  "SubmitHouseForm": {
+    "houseNumber": "House Number",
+    "houseNumberPlaceholder": "e.g., 15",
+    "houseAddress": "House Address",
+    "houseAddressPlaceholder": "e.g., Tielensstraat",
+    "startDate": "Start Date",
+    "uploadPhoto": "Upload Photo",
+    "uploadVideo": "Upload Video",
+    "placeOnMap": "Place on map",
+    "submitSuccess": "House submitted successfully! It will appear on the map once approved by an admin.",
+    "geocodingError": "Failed to find coordinates for the given address.",
+    "submissionError": "Failed to submit house. Please try again.",
+    "selectPhotoError": "Please select at least one photo"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "Something went wrong. Please try again.",
+    "close": "Close"
+  }
+}

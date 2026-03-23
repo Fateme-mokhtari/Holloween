@@ -1,0 +1,28 @@
+{
+  "TopMenu": {
+    "title": "Enge Zones",
+    "admin": "Beheer",
+    "refresh": "Vernieuwen",
+    "switchToNl": "Schakel naar Nederlands",
+    "switchToEn": "Schakel naar Engels"
+  },
+  "SubmitHouseForm": {
+    "houseNumber": "Huisnummer",
+    "houseNumberPlaceholder": "bijv. 15",
+    "houseAddress": "Huisadres",
+    "houseAddressPlaceholder": "bijv. Tielensstraat",
+    "startDate": "Startdatum",
+    "uploadPhoto": "Foto uploaden",
+    "uploadVideo": "Video uploaden",
+    "placeOnMap": "Op kaart plaatsen",
+    "submitSuccess": "Huis succesvol ingediend! Het verschijnt op de kaart zodra het is goedgekeurd door een beheerder.",
+    "geocodingError": "Kan geen coördinaten vinden voor het opgegeven adres.",
+    "submissionError": "Kan huis niet indienen. Probeer het opnieuw.",
+    "selectPhotoError": "Selecteer minimaal één foto"
+  },
+  "Common": {
+    "loading": "Laden...",
+    "error": "Er is iets misgegaan. Probeer het opnieuw.",
+    "close": "Sluiten"
+  }
+}
