@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { submitHouseSchema, SubmitHouseFormData } from '@/types/submitHouse';
 import { submitHouseAction } from '@/app/actions/submitHouseAction';
 import { geocodeHouseLocation } from '@/util/geocodeHouseLocation';
@@ -21,6 +22,7 @@ interface SubmitHouseFormProps {
 }
 
 export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormProps) {
+  const t = useTranslations('SubmitHouseForm');
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -58,7 +60,7 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
       setValue('house_latitude', String(result.lat), { shouldDirty: true });
       setValue('house_longitude', String(result.lng), { shouldDirty: true });
     } catch (error) {
-      setErrorToast('Failed to find coordinates for the given address.');
+      setErrorToast(t('geocodingError'));
     }
   };
 
@@ -76,7 +78,7 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
 
       const files: File[] = formData.photo ?? [];
       if (files.length === 0) {
-        alert('Please select at least one photo');
+        setErrorToast(t('selectPhotoError'));
         return;
       }
 
@@ -91,14 +93,14 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
 
       if (response.result) {
      
-        setSuccsessToast('House submitted successfully! It will appear on the map once approved by an admin.');
+        setSuccsessToast(t('submitSuccess'));
         reset();
         onSuccess();
       } else {
-        setErrorToast(response.message || 'Something went wrong. Please try again.');
+        setErrorToast(response.message || t('submissionError'));
       }
     } catch (error) {
-      setErrorToast(error instanceof Error ? error.message : 'Failed to submit house. Please try again.');
+      setErrorToast(error instanceof Error ? error.message : t('submissionError'));
     } finally {
       setIsLoading(false);
     }
@@ -108,8 +110,8 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
 
     <Form onSubmit={handleSubmit(onSubmit)}>
       <TextField
-        label="House Number"
-        placeholder="e.g., 15"
+        label={t('houseNumber')}
+        placeholder={t('houseNumberPlaceholder')}
         error={errors.house_number}
         {...register('house_number', {
           onBlur: () => {
@@ -118,8 +120,8 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
         })}
       />
       <TextField
-        label="House Address"
-        placeholder="e.g., Tielensstraat"
+        label={t('houseAddress')}
+        placeholder={t('houseAddressPlaceholder')}
         error={errors.house_address}
         {...register('house_address', {
           onBlur: () => {
@@ -128,7 +130,7 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
         })}
       />
       <TextField
-        label="Start Date"
+        label={t('startDate')}
         type="datetime-local"
         error={errors.start_date}
         {...register('start_date')}
@@ -137,7 +139,7 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
       <input type="hidden" {...register('house_latitude')} />
       <input type="hidden" {...register('house_longitude')} />
       <FileUpload
-        label="Upload Photo"
+        label={t('uploadPhoto')}
         icon="+"
         accept="image/*"
         error={errors.photo}
@@ -147,7 +149,7 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
         }}
       />
       <FileUpload
-        label="Upload Video"
+        label={t('uploadVideo')}
         icon="+"
         accept="video/*"
         error={errors.video}
@@ -157,7 +159,7 @@ export default function SubmitHouseForm({ center, onSuccess }: SubmitHouseFormPr
         }}
       />
       <FormButton isLoading={isLoading}>
-        Place on map
+        {t('placeOnMap')}
       </FormButton>
     </Form>
     </>
