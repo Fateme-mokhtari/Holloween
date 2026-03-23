@@ -11,7 +11,7 @@ import { useState } from "react";
 import { SubmitHouseForm } from "@/app/components/form";
 import HousePopup from "./HousePopup";
 import { Houses } from "@/types/houses";
-
+import Image from "next/image";
 export interface House {
   id: number;
   number: string;
@@ -88,6 +88,8 @@ export default function Map({ houses, zones, center }: MapProps) {
           </Marker>
         ))}
         <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+            <Image src="/assets/images/header.svg" alt="House" width={448} height={150} /> 
+            
           <SubmitHouseForm center={center} onSuccess={() => setIsOpen(false)} />
         </Modal>
       </MapContainer>
