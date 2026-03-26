@@ -6,6 +6,7 @@ import {
   EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function TopMenu() {
@@ -34,12 +35,15 @@ export default function TopMenu() {
       </div>
 
       {/* Center logo/text */}
-      <div className="flex items-center gap-2">
+      <Link
+        href="/"
+        className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+      >
         <span className="text-3xl">🎃</span>
         <h1 className="text-2xl font-serif italic font-halloween">
           {t("title")}
         </h1>
-      </div>
+      </Link>
 
       {/* Right actions: refresh & language */}
       <div className="flex items-center gap-4">
