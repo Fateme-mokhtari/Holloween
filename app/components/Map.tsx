@@ -1,17 +1,16 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import { Icons } from "./MapIcons";
+import { SubmitHouseForm } from "@/app/components/form";
+import { Houses } from "@/types/houses";
 import { Zones } from "@/types/zones";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { MapContainer, Marker, Polygon, Popup, TileLayer } from "react-leaflet";
+import HousePopup from "./HousePopup";
 import MapButton from "./MapButton";
 import Modal from "./Modal";
-import { useState } from "react";
-import { SubmitHouseForm } from "@/app/components/form";
-import HousePopup from "./HousePopup";
-import { Houses } from "@/types/houses";
-import Image from "next/image";
 export interface House {
   id: number;
   number: string;
@@ -32,8 +31,54 @@ const houseMarkerIcon = L.icon({
   iconAnchor: [18, 36],
   popupAnchor: [0, -36],
 });
+
+// Ghost emoji icon for user location
+const ghostMarkerIcon = L.divIcon({
+  html: '<div style="font-size: 32px; text-align: center;">👻</div>',
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  popupAnchor: [0, -16],
+});
+
+interface UserLocation {
+  lat: number;
+  lng: number;
+}
 export default function Map({ houses, zones, center }: MapProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+  const watchIdRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      console.warn("Geolocation is not supported by this browser.");
+      return;
+    }
+
+    // Start watching user location
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      (error) => {
+        console.warn("Error getting user location:", error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      },
+    );
+
+    return () => {
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+    };
+  }, []);
   return (
     <div className="h-[calc(100vh-60px)] w-full overflow-hidden relative">
       <div className="absolute top-4 right-4 z-1000 flex gap-2">
@@ -87,9 +132,24 @@ export default function Map({ houses, zones, center }: MapProps) {
             </Popup>
           </Marker>
         ))}
+
+        {/* User Location Marker */}
+        {userLocation && (
+          <Marker
+            position={[userLocation.lat, userLocation.lng]}
+            icon={ghostMarkerIcon}
+          >
+            <Popup>Your Location</Popup>
+          </Marker>
+        )}
         <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-            <Image src="/assets/images/header.svg" alt="House" width={448} height={150} /> 
-            
+          <Image
+            src="/assets/images/header.svg"
+            alt="House"
+            width={448}
+            height={150}
+          />
+
           <SubmitHouseForm center={center} onSuccess={() => setIsOpen(false)} />
         </Modal>
       </MapContainer>
