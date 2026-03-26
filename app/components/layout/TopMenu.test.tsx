@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import enMessages from "../../messages/en.json";
-import TopMenu from "./TopMenu";
+import enMessages from "../../../messages/en.json";
+import TopMenu from "../TopMenu";
 
 const mockRefresh = jest.fn();
 
