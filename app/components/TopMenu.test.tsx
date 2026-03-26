@@ -1,25 +1,25 @@
-import '@testing-library/jest-dom';
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import TopMenu from './TopMenu';
-import enMessages from '../../messages/en.json';
-import nlMessages from '../../messages/nl.json';
+import "@testing-library/jest-dom";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import enMessages from "../../messages/en.json";
+import TopMenu from "./TopMenu";
 
 const mockRefresh = jest.fn();
 
-jest.mock('next/navigation', () => ({
+jest.mock("next/navigation", () => ({
   useRouter: () => ({
     refresh: mockRefresh,
   }),
   useTransition: () => [false, jest.fn()],
 }));
 
-jest.mock('next-intl', () => ({
+jest.mock("next-intl", () => ({
   useTranslations: (namespace: string) => (key: string) => {
-    const messages = namespace === 'TopMenu' ? enMessages.TopMenu : enMessages.Common;
+    const messages =
+      namespace === "TopMenu" ? enMessages.TopMenu : enMessages.Common;
     return messages[key as keyof typeof messages] || key;
   },
-  useLocale: () => 'en',
+  useLocale: () => "en",
   NextIntlClientProvider: ({ children }: any) => children,
 }));
 
@@ -27,74 +27,74 @@ function renderTopMenu() {
   return render(<TopMenu />);
 }
 
-describe('TopMenu', () => {
+describe("TopMenu", () => {
   beforeEach(() => {
     mockRefresh.mockClear();
-    document.cookie = '';
+    document.cookie = "";
   });
 
-  describe('Rendering', () => {
-    it('should render the main title', () => {
+  describe("Rendering", () => {
+    it("should render the main title", () => {
       renderTopMenu();
-      expect(screen.getByText('Scare Zones')).toBeInTheDocument();
+      expect(screen.getByText("Scare Zones")).toBeInTheDocument();
     });
 
-    it('should render the pumpkin emoji', () => {
+    it("should render the pumpkin emoji", () => {
       renderTopMenu();
-      expect(screen.getByText('🎃')).toBeInTheDocument();
+      expect(screen.getByText("🎃")).toBeInTheDocument();
     });
 
-    it('should render the Admin button with correct text', () => {
+    it("should render the Admin button with correct text", () => {
       renderTopMenu();
       expect(screen.getByText(/🛠️\s+Admin/)).toBeInTheDocument();
     });
 
-    it('should render refresh button', () => {
+    it("should render refresh button", () => {
       renderTopMenu();
-      const refreshBtn = screen.getByRole('button', { name: /🔄/ });
+      const refreshBtn = screen.getByRole("button", { name: /🔄/ });
       expect(refreshBtn).toBeInTheDocument();
     });
 
-    it('should render language switcher button', () => {
+    it("should render language switcher button", () => {
       renderTopMenu();
       const langBtn = screen.getByTitle(/Switch to/);
       expect(langBtn).toBeInTheDocument();
     });
   });
 
-  describe('Language Switching', () => {
-    it('should show NL flag when in English', () => {
+  describe("Language Switching", () => {
+    it("should show NL flag when in English", () => {
       renderTopMenu();
       // LanguageSwitcher shows the opposite flag
       expect(screen.getByText(/🇳🇱/)).toBeInTheDocument();
     });
 
-    it('should update locale cookie when language button is clicked', async () => {
+    it("should update locale cookie when language button is clicked", async () => {
       const user = userEvent.setup();
       renderTopMenu();
 
-      const switchBtn = screen.getByTitle('Switch to Dutch');
+      const switchBtn = screen.getByTitle("Switch to Dutch");
       await user.click(switchBtn);
 
-      expect(document.cookie).toContain('locale=nl');
+      expect(document.cookie).toContain("locale=nl");
     });
 
-    it('should call router.refresh() after language change', async () => {
+    it("should call router.refresh() after language change", async () => {
       const user = userEvent.setup();
       renderTopMenu();
 
-      await user.click(screen.getByTitle('Switch to Dutch'));
+      await user.click(screen.getByTitle("Switch to Dutch"));
 
       await waitFor(() => {
         expect(mockRefresh).toHaveBeenCalledTimes(1);
       });
     });
 
-    it('should disable button during language switch (loading state)', async () => {
+    it("should disable button during language switch (loading state)", async () => {
       const user = userEvent.setup();
       renderTopMenu();
 
-      const switchBtn = screen.getByTitle('Switch to Dutch');
+      const switchBtn = screen.getByTitle("Switch to Dutch");
       const clickPromise = user.click(switchBtn);
 
       // Button should be disabled during transition
@@ -102,21 +102,21 @@ describe('TopMenu', () => {
     });
   });
 
-  describe('Header Layout', () => {
-    it('should render left section with email and admin buttons', () => {
+  describe("Header Layout", () => {
+    it("should render left section with email and admin buttons", () => {
       renderTopMenu();
-      const emailBtn = screen.getByRole('button', { name: /📧/ });
+      const emailBtn = screen.getByRole("button", { name: /📧/ });
       const adminBtn = screen.getByText(/🛠️/);
-      
+
       expect(emailBtn).toBeInTheDocument();
       expect(adminBtn).toBeInTheDocument();
     });
 
-    it('should render right section with refresh and language switcher', () => {
+    it("should render right section with refresh and language switcher", () => {
       renderTopMenu();
-      const refreshBtn = screen.getByRole('button', { name: /🔄/ });
+      const refreshBtn = screen.getByRole("button", { name: /🔄/ });
       const langBtn = screen.getByTitle(/Switch to/);
-      
+
       expect(refreshBtn).toBeInTheDocument();
       expect(langBtn).toBeInTheDocument();
     });

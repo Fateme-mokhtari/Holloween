@@ -21,7 +21,9 @@ export default function TopMenu() {
       {/* Center logo/text */}
       <div className="flex items-center gap-2">
         <span className="text-3xl">🎃</span>
-        <h1 className="text-2xl font-serif italic font-halloween">{t("title")}</h1>
+        <h1 className="text-2xl font-serif italic font-halloween">
+          {t("title")}
+        </h1>
       </div>
 
       {/* Right actions: refresh & language */}
