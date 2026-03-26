@@ -2,7 +2,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import ToastProvider from "./components/Toast";
+import ToastProvider from "./components/common/Toast";
 
 import "./globals.css";
 

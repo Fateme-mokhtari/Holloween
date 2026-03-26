@@ -1,7 +1,7 @@
 "use client";
 
 import { submitHouseAction } from "@/app/actions/submitHouseAction";
-import { setErrorToast, setSuccsessToast } from "@/app/components/Toast";
+import { setErrorToast, setSuccsessToast } from "@/app/components/common/Toast";
 import { SubmitHouseFormData, submitHouseSchema } from "@/types/submitHouse";
 import { geocodeHouseLocation } from "@/util/geocodeHouseLocation";
 import { zodResolver } from "@hookform/resolvers/zod";
