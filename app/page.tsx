@@ -1,7 +1,5 @@
-
-import styles from "./page.module.css";
 import { getAllHouses } from "@/lib/apiHouses";
-
+import styles from "./page.module.css";
 
 
 export default async function Home() {
@@ -11,8 +9,8 @@ export default async function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
- test
-     {/* <ul>
+        test
+        {/* <ul>
         {houses.map((house) => {
           return (
             <li key={house.id}>
@@ -21,7 +19,6 @@ export default async function Home() {
           );
         })}
      </ul> */}
-    
       </main>
     </div>
   );
