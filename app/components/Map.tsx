@@ -32,12 +32,12 @@ const houseMarkerIcon = L.icon({
   popupAnchor: [0, -36],
 });
 
-// Ghost emoji icon for user location
-const ghostMarkerIcon = L.divIcon({
-  html: '<div style="font-size: 32px; text-align: center;">👻</div>',
-  iconSize: [32, 32],
-  iconAnchor: [16, 16],
-  popupAnchor: [0, -16],
+// Ghost SVG icon for user location
+const ghostMarkerIcon = L.icon({
+  iconUrl: "/assets/images/ghost.svg",
+  iconSize: [40, 40],
+  iconAnchor: [20, 20],
+  popupAnchor: [0, -20],
 });
 
 interface UserLocation {
