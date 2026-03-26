@@ -1,25 +1,24 @@
 import { getAllHouses } from "@/lib/apiHouses";
-import styles from "./page.module.css";
-
+import { getAllZones } from "@/lib/apiZones";
+import { Suspense } from "react";
+import SpookyMap from "./components/SpookyMap";
+import TopMenu from "./components/TopMenu";
 
 export default async function Home() {
-  const houses = await getAllHouses();
-  console.log({ houses });
+  const [houses, zones] = await Promise.all([getAllHouses(), getAllZones()]);
 
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        test
-        {/* <ul>
-        {houses.map((house) => {
-          return (
-            <li key={house.id}>
-              <h2>{house.number} - {house.address}</h2>
-            </li>
-          );
-        })}
-     </ul> */}
-      </main>
-    </div>
+    <>
+      <TopMenu />
+      <Suspense
+        fallback={
+          <div className="h-screen bg-slate-950 flex items-center justify-center text-orange-500 animate-pulse">
+            Summoning the Scare Map...
+          </div>
+        }
+      >
+        <SpookyMap houses={houses} zones={zones} />
+      </Suspense>
+    </>
   );
 }
