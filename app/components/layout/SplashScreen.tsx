@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function SplashScreen() {
-  const [isVisible, setIsVisible] = useState(true);
   const [isLeaving, setIsLeaving] = useState(false);
   const [shouldShow, setShouldShow] = useState(false);
 
@@ -13,9 +12,7 @@ export default function SplashScreen() {
     const hasSeenSplash = localStorage.getItem("splashScreenSeen");
 
     if (hasSeenSplash) {
-      // User has seen it before, don't show
-      setIsVisible(false);
-      setShouldShow(false);
+      // User has seen it before, don't show — shouldShow stays false
       return;
     }
 
@@ -30,7 +27,7 @@ export default function SplashScreen() {
 
       // Wait for bounce-out animation to complete before hiding
       const hideTimer = setTimeout(() => {
-        setIsVisible(false);
+        setShouldShow(false);
       }, 600); // Duration of bounce-out animation
 
       return () => clearTimeout(hideTimer);
@@ -39,7 +36,7 @@ export default function SplashScreen() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!isVisible || !shouldShow) {
+  if (!shouldShow) {
     return null;
   }
 
