@@ -1,6 +1,7 @@
 import { getAllHouses } from "@/lib/apiHouses";
 import { getAllZones } from "@/lib/apiZones";
 import { Suspense } from "react";
+import SplashScreen from "./components/SplashScreen";
 import SpookyMap from "./components/SpookyMap";
 import TopMenu from "./components/TopMenu";
 
@@ -9,6 +10,7 @@ export default async function Home() {
 
   return (
     <>
+      <SplashScreen />
       <TopMenu />
       <Suspense
         fallback={
