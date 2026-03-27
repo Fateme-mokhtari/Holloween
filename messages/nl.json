@@ -35,6 +35,12 @@
     "uploadError": "Kan foto niet uploaden. Probeer het opnieuw.",
     "selectPhotoError": "Selecteer minimaal één foto."
   },
+  "Map": {
+    "markHouse": "Huis markeren",
+    "clickToMark": "Klik op de kaart om het huis te markeren",
+    "yourLocation": "Jouw locatie",
+    "houseImageAlt": "Huis"
+  },
   "NotFound": {
     "title": "Verdwaald in het Donker",
     "description": "Deze pagina is verdwenen in de schaduwen...",

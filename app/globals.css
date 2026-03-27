@@ -63,6 +63,26 @@ a {
   padding: 0;
 }
 
+.map-marking-mode,
+.map-marking-mode .leaflet-pane,
+.map-marking-mode .leaflet-pane * {
+  cursor: default !important;
+}
+
+@keyframes house-marker-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.house-marker-placement {
+  animation: house-marker-bounce 0.9s ease-in-out infinite;
+}
+
 /* Splash Screen Animations */
 @keyframes bounce-in {
   0% {

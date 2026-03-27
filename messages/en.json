@@ -35,6 +35,12 @@
     "uploadError": "Failed to upload photo. Please try again.",
     "selectPhotoError": "Please select at least one photo."
   },
+  "Map": {
+    "markHouse": "Mark a Hount",
+    "clickToMark": "Click on the map to mark the house",
+    "yourLocation": "Your Location",
+    "houseImageAlt": "House"
+  },
   "NotFound": {
     "title": "Lost in the Dark",
     "description": "This page has vanished into the shadows...",

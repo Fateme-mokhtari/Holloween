@@ -3,7 +3,6 @@
 import { submitHouseAction } from "@/app/actions/submitHouseAction";
 import { setErrorToast, setSuccsessToast } from "@/app/components/common/Toast";
 import { SubmitHouseFormData, submitHouseSchema } from "@/types/submitHouse";
-import { geocodeHouseLocation } from "@/util/geocodeHouseLocation";
 import { CameraIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -28,7 +27,6 @@ export default function SubmitHouseForm({
   const {
     register,
     handleSubmit,
-    getValues,
     setValue,
     formState: { errors },
     reset,
@@ -44,26 +42,6 @@ export default function SubmitHouseForm({
       video: [],
     },
   });
-
-  const fillCoordinatesFromAddress = async () => {
-    const houseNumber = getValues("house_number");
-    const houseAddress = getValues("house_address");
-
-    if (!houseNumber?.trim() || !houseAddress?.trim()) {
-      return;
-    }
-
-    try {
-      const result = await geocodeHouseLocation(houseNumber, houseAddress);
-      if (!result) {
-        return;
-      }
-      setValue("house_latitude", String(result.lat), { shouldDirty: true });
-      setValue("house_longitude", String(result.lng), { shouldDirty: true });
-    } catch (_error) {
-      setErrorToast(t("geocodingError"));
-    }
-  };
 
   const formatDate = (dateTimeLocal: string) => {
     if (!dateTimeLocal) return "";
@@ -119,21 +97,13 @@ export default function SubmitHouseForm({
           label={t("houseNumber")}
           placeholder={t("houseNumberPlaceholder")}
           error={errors.house_number}
-          {...register("house_number", {
-            onBlur: () => {
-              void fillCoordinatesFromAddress();
-            },
-          })}
+          {...register("house_number")}
         />
         <TextField
           label={t("houseAddress")}
           placeholder={t("houseAddressPlaceholder")}
           error={errors.house_address}
-          {...register("house_address", {
-            onBlur: () => {
-              void fillCoordinatesFromAddress();
-            },
-          })}
+          {...register("house_address")}
         />
         <TextField
           label={t("startDate")}

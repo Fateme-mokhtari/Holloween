@@ -1,8 +1,29 @@
-import "@testing-library/jest-dom";
 import { Houses } from "@/types/houses";
 import { Zones } from "@/types/zones";
+import "@testing-library/jest-dom";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import Map from "./Map";
+
+jest.mock("next-intl", () => ({
+  useTranslations: (namespace: string) => (key: string) => {
+    if (namespace === "Map") {
+      const mapMessages: Record<string, string> = {
+        markHouse: "Mark a Hount",
+        clickToMark: "Click on the map to mark the house",
+        yourLocation: "Your Location",
+        houseImageAlt: "House",
+      };
+
+      return mapMessages[key] ?? key;
+    }
+
+    return key;
+  },
+}));
+
+let mapClickHandler:
+  | ((event: { latlng: { lat: number; lng: number } }) => void)
+  | undefined;
 
 // ============================================================
 // MY THINKING:
@@ -25,7 +46,12 @@ import Map from "./Map";
 // Mock react-leaflet — render children in simple divs
 jest.mock("react-leaflet", () => ({
   MapContainer: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="map-container">{children}</div>
+    <div
+      data-testid="map-container"
+      onClick={() => mapClickHandler?.({ latlng: { lat: 51.95, lng: 4.5 } })}
+    >
+      {children}
+    </div>
   ),
   TileLayer: () => <div data-testid="tile-layer" />,
   Marker: ({
@@ -45,6 +71,21 @@ jest.mock("react-leaflet", () => ({
   Polygon: ({ positions }: { positions: [number, number][] }) => (
     <div data-testid="polygon" data-points={positions.length} />
   ),
+  useMapEvents: (
+    handlers: Partial<{
+      click: (event: { latlng: { lat: number; lng: number } }) => void;
+    }>,
+  ) => {
+    mapClickHandler = handlers.click;
+    return {};
+  },
+  useMap: () => ({
+    getContainer: () => ({ style: {} }),
+    dragging: {
+      disable: jest.fn(),
+      enable: jest.fn(),
+    },
+  }),
 }));
 
 // Mock leaflet
@@ -154,6 +195,7 @@ const mockClearWatch = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mapClickHandler = undefined;
   Object.defineProperty(navigator, "geolocation", {
     value: {
       watchPosition: mockWatchPosition,
@@ -244,6 +286,7 @@ describe("Map", () => {
       render(<Map houses={[]} zones={[]} center={mockCenter} />);
 
       fireEvent.click(screen.getByText("Mark a Hount"));
+      fireEvent.click(screen.getByTestId("map-container"));
 
       expect(screen.getByTestId("modal")).toBeInTheDocument();
       expect(screen.getByTestId("submit-form")).toBeInTheDocument();
@@ -253,6 +296,7 @@ describe("Map", () => {
       render(<Map houses={[]} zones={[]} center={mockCenter} />);
 
       fireEvent.click(screen.getByText("Mark a Hount"));
+      fireEvent.click(screen.getByTestId("map-container"));
       expect(screen.getByTestId("modal")).toBeInTheDocument();
 
       fireEvent.click(screen.getByTestId("close-modal"));
@@ -263,6 +307,7 @@ describe("Map", () => {
       render(<Map houses={[]} zones={[]} center={mockCenter} />);
 
       fireEvent.click(screen.getByText("Mark a Hount"));
+      fireEvent.click(screen.getByTestId("map-container"));
       fireEvent.click(screen.getByTestId("form-success"));
 
       expect(screen.queryByTestId("modal")).not.toBeInTheDocument();
