@@ -4,6 +4,7 @@ import { submitHouseAction } from "@/app/actions/submitHouseAction";
 import { setErrorToast, setSuccsessToast } from "@/app/components/common/Toast";
 import { SubmitHouseFormData, submitHouseSchema } from "@/types/submitHouse";
 import { geocodeHouseLocation } from "@/util/geocodeHouseLocation";
+import { CameraIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -145,7 +146,7 @@ export default function SubmitHouseForm({
         <input type="hidden" {...register("house_longitude")} />
         <FileUpload
           label={t("uploadPhoto")}
-          icon="+"
+          icon={<CameraIcon className="w-5 h-5" />}
           accept="image/*"
           error={errors.photo}
           onFileChange={(files) => {
@@ -155,7 +156,7 @@ export default function SubmitHouseForm({
         />
         <FileUpload
           label={t("uploadVideo")}
-          icon="+"
+          icon={<VideoCameraIcon className="w-5 h-5" />}
           accept="video/*"
           error={errors.video}
           onFileChange={(files) => {
