@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from "react";
 
 interface FileUploadProps {
   accept?: string;
@@ -14,13 +14,13 @@ interface FileUploadProps {
 export default function FileUpload({
   accept,
   multiple = true,
-  label = 'Upload File',
-  icon = '📎',
+  label = "Upload File",
+  icon = "📎",
   error,
   onFileChange,
 }: FileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [fileName, setFileName] = useState('');
+  const [fileName, setFileName] = useState("");
 
   const handleClick = () => {
     inputRef.current?.click();
@@ -30,10 +30,10 @@ export default function FileUpload({
     const files = e.target.files;
     if (files && files.length > 0) {
       setFileName(
-        files.length === 1 ? files[0].name : `${files.length} files selected`
+        files.length === 1 ? files[0].name : `${files.length} files selected`,
       );
     } else {
-      setFileName('');
+      setFileName("");
     }
     onFileChange?.(files);
   };
@@ -51,7 +51,11 @@ export default function FileUpload({
       <button
         type="button"
         onClick={handleClick}
-        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 uppercase tracking-wide flex items-center justify-center gap-2"
+        className={`flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 font-bold uppercase tracking-wide transition-colors cursor-pointer duration-200 ${
+          fileName
+            ? "border-orange-500/70 bg-orange-900/30 text-orange-200 hover:bg-orange-900/40"
+            : "border-purple-500/70 bg-gray-800 text-purple-100 hover:bg-gray-700"
+        }`}
       >
         <span>{icon}</span>
         <span>{fileName || label}</span>
@@ -62,4 +66,3 @@ export default function FileUpload({
     </div>
   );
 }
-
