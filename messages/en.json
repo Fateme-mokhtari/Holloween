@@ -28,6 +28,7 @@
   "HousePopup": {
     "houseAddress": "House address",
     "startDate": "Start date",
+    "choosePhoto": "Choose Photo(s)",
     "uploadPhoto": "Upload Photo",
     "uploading": "Uploading...",
     "uploadSuccess": "Photo uploaded successfully!",
