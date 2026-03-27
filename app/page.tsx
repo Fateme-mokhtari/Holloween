@@ -4,9 +4,12 @@ import { Suspense } from "react";
 import TopMenu from "./components/layout/TopMenu";
 import SpookyMap from "./components/map/SpookyMap";
 
-export default async function Home() {
+async function MapSection() {
   const [houses, zones] = await Promise.all([getAllHouses(), getAllZones()]);
+  return <SpookyMap houses={houses} zones={zones} />;
+}
 
+export default function Home() {
   return (
     <>
       <TopMenu />
@@ -17,7 +20,7 @@ export default async function Home() {
           </div>
         }
       >
-        <SpookyMap houses={houses} zones={zones} />
+        <MapSection />
       </Suspense>
     </>
   );
