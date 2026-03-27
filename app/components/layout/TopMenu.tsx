@@ -1,10 +1,6 @@
 "use client";
 
-import {
-    ArrowPathIcon,
-    Cog6ToothIcon,
-    EnvelopeIcon,
-} from "@heroicons/react/24/outline";
+import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import LanguageSwitcher from "../common/LanguageSwitcher";
@@ -28,10 +24,6 @@ export default function TopMenu() {
         >
           <EnvelopeIcon className="w-5 h-5" />
         </button>
-        <button className="flex p-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
-          <Cog6ToothIcon className="w-5 h-5" />
-          <span className="ml-1 text-sm">{t("admin")}</span>
-        </button>
       </div>
 
       {/* Center logo/text */}
@@ -47,12 +39,6 @@ export default function TopMenu() {
 
       {/* Right actions: refresh & language */}
       <div className="flex items-center gap-4">
-        <button
-          title={t("refresh")}
-          className="p-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
-        >
-          <ArrowPathIcon className="w-5 h-5" />
-        </button>
         <LanguageSwitcher />
       </div>
     </header>
