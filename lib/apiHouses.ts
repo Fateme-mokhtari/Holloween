@@ -1,12 +1,29 @@
-import { apiClient } from './apiClient';
-import { Houses } from '@/types/houses';
-import { SubmitHouseRequest, SubmitHouseResponse } from '@/types/submitHouse';
+import { Houses } from "@/types/houses";
+import { SubmitHouseRequest, SubmitHouseResponse } from "@/types/submitHouse";
+import { apiClient } from "./apiClient";
 
-export async function getAllHouses(): Promise<Houses[]> {
-  return apiClient.get('/index.php?endpoint=getHouses');
+export async function addHousePhoto(
+  houseId: number,
+  media: File[],
+): Promise<unknown> {
+  const formData = new FormData();
+  formData.append("house_id", String(houseId));
+  formData.append("endpoint", "addHousePhoto");
+
+  media.forEach((file) => {
+    formData.append("media[]", file, file.name);
+  });
+
+  return apiClient.postFormData("/index.php", formData);
 }
 
-export async function submitHouse(data: SubmitHouseRequest): Promise<SubmitHouseResponse> {
+export async function getAllHouses(): Promise<Houses[]> {
+  return apiClient.get("/index.php?endpoint=getHouses");
+}
+
+export async function submitHouse(
+  data: SubmitHouseRequest,
+): Promise<SubmitHouseResponse> {
   const formData = new FormData();
   const fields: Record<string, string> = {
     house_number: data.house_number,
@@ -14,7 +31,7 @@ export async function submitHouse(data: SubmitHouseRequest): Promise<SubmitHouse
     start_date: data.start_date,
     house_latitude: String(data.house_latitude),
     house_longitude: String(data.house_longitude),
-    endpoint: 'submitHouse',
+    endpoint: "submitHouse",
   };
 
   Object.entries(fields).forEach(([key, value]) => {
@@ -22,8 +39,8 @@ export async function submitHouse(data: SubmitHouseRequest): Promise<SubmitHouse
   });
 
   data.media.forEach((file) => {
-    formData.append('media[]', file, file.name);
+    formData.append("media[]", file, file.name);
   });
-  
-  return apiClient.postFormData('/index.php', formData);
+
+  return apiClient.postFormData("/index.php", formData);
 }

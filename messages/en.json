@@ -25,6 +25,15 @@
     "error": "Something went wrong. Please try again.",
     "close": "Close"
   },
+  "HousePopup": {
+    "houseAddress": "House address",
+    "startDate": "Start date",
+    "uploadPhoto": "Upload Photo",
+    "uploading": "Uploading...",
+    "uploadSuccess": "Photo uploaded successfully!",
+    "uploadError": "Failed to upload photo. Please try again.",
+    "selectPhotoError": "Please select at least one photo."
+  },
   "NotFound": {
     "title": "Lost in the Dark",
     "description": "This page has vanished into the shadows...",

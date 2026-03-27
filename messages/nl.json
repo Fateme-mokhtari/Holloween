@@ -25,6 +25,15 @@
     "error": "Er is iets misgegaan. Probeer het opnieuw.",
     "close": "Sluiten"
   },
+  "HousePopup": {
+    "houseAddress": "Huisadres",
+    "startDate": "Startdatum",
+    "uploadPhoto": "Foto uploaden",
+    "uploading": "Uploaden...",
+    "uploadSuccess": "Foto succesvol geüpload!",
+    "uploadError": "Kan foto niet uploaden. Probeer het opnieuw.",
+    "selectPhotoError": "Selecteer minimaal één foto."
+  },
   "NotFound": {
     "title": "Verdwaald in het Donker",
     "description": "Deze pagina is verdwenen in de schaduwen...",
