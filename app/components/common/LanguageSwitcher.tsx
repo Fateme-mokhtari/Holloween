@@ -26,28 +26,45 @@ export default function LanguageSwitcher() {
       disabled={isPending}
       title={isEnglish ? t("switchToNl") : t("switchToEn")}
       className={`
-        relative flex items-center gap-2 px-3 py-1.5 rounded-lg
-        border border-orange-500/40 text-sm font-semibold
-        bg-purple-800/60 text-orange-100
-        hover:bg-orange-600/20 hover:border-orange-400/70
-        shadow-[0_0_8px_rgba(234,88,12,0.15)]
-        hover:shadow-[0_0_14px_rgba(234,88,12,0.35)]
+        relative inline-flex h-10 w-[104px] items-center rounded-full
+        border border-orange-500/50 bg-purple-800/70 p-1
+        shadow-[0_0_10px_rgba(234,88,12,0.2)]
         transition-all duration-200
+        hover:border-orange-400/80 hover:shadow-[0_0_14px_rgba(234,88,12,0.35)]
+        cursor-pointer
         disabled:opacity-50 disabled:cursor-wait
       `}
+      aria-label={isEnglish ? t("switchToNl") : t("switchToEn")}
+      aria-pressed={!isEnglish}
     >
-      {isPending ? (
-        <span className="animate-pulse">🕸️</span>
-      ) : isEnglish ? (
-        <>
-          <span className="text-base leading-none">🇳🇱</span>
-          <span className="text-orange-300 tracking-wide">NL</span>
-        </>
-      ) : (
-        <>
-          <span className="text-base leading-none">🇬🇧</span>
-          <span className="text-orange-300 tracking-wide">EN</span>
-        </>
+      <span
+        className={`
+          absolute top-1 bottom-1 w-[46px] rounded-full
+          bg-orange-500 shadow-[0_0_12px_rgba(234,88,12,0.45)]
+          transition-transform duration-200
+          ${isEnglish ? "translate-x-0" : "translate-x-[52px]"}
+        `}
+      />
+
+      <span className="relative z-10 grid w-full grid-cols-2 text-sm font-semibold">
+        <span
+          className={`text-center transition-colors duration-200 ${
+            isEnglish ? "text-white" : "text-orange-200/80"
+          }`}
+        >
+          EN
+        </span>
+        <span
+          className={`text-center transition-colors duration-200 ${
+            isEnglish ? "text-orange-200/80" : "text-white"
+          }`}
+        >
+          NL
+        </span>
+      </span>
+
+      {isPending && (
+        <span className="absolute -right-5 text-xs animate-pulse">🕸️</span>
       )}
     </button>
   );
