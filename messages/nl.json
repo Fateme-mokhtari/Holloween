@@ -24,5 +24,10 @@
     "loading": "Laden...",
     "error": "Er is iets misgegaan. Probeer het opnieuw.",
     "close": "Sluiten"
+  },
+  "NotFound": {
+    "title": "Verdwaald in het Donker",
+    "description": "Deze pagina is verdwenen in de schaduwen...",
+    "backHome": "Ontsnap naar Veiligheid"
   }
 }
