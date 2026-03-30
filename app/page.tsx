@@ -1,6 +1,7 @@
 import { getAllHouses } from "@/lib/apiHouses";
 import { getAllZones } from "@/lib/apiZones";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Suspense } from "react";
 import TopMenu from "./components/layout/TopMenu";
 import SpookyMap from "./components/map/SpookyMap";
@@ -24,6 +25,7 @@ export default function Home() {
         <MapSection />
       </Suspense>
       <Analytics />
+      <SpeedInsights />
     </>
   );
 }

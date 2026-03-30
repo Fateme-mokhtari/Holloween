@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/postcss": "^4.2.1",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "leaflet": "^1.9.4",
     "next": "16.1.6",
     "next-intl": "^4.8.3",
