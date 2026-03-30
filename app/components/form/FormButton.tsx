@@ -23,7 +23,7 @@ export default function FormButton({
     <button
       type="submit"
       disabled={disabled || isLoading}
-      className={`w-full cursor-pointer rounded-lg px-4 py-3 font-halloween font-lg uppercase tracking-wide transition-colors duration-200 disabled:cursor-not-allowed disabled:bg-purple-900 ${variantClasses} ${
+      className={`w-full cursor-pointer rounded-lg px-4 py-3 font-creepster text-xl uppercase tracking-wide transition-colors duration-200 disabled:cursor-not-allowed disabled:bg-purple-900 ${variantClasses} ${
         className || ""
       }`}
       {...props}

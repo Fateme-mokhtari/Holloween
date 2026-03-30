@@ -32,9 +32,7 @@ export default function TopMenu() {
         className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
       >
         <span className="text-3xl">🎃</span>
-        <h1 className="text-2xl font-serif italic font-halloween">
-          {t("title")}
-        </h1>
+        <h1 className="text-2xl font-creepster">{t("title")}</h1>
       </Link>
 
       {/* Right actions: refresh & language */}

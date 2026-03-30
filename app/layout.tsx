@@ -1,20 +1,10 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
-import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import ToastProvider from "./components/common/Toast";
+import { creepster } from "./fonts";
 
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata = {
   title: "Holloween",
@@ -31,7 +21,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${creepster.variable}`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
           <ToastProvider />
