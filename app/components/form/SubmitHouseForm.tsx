@@ -33,9 +33,9 @@ export default function SubmitHouseForm({
   } = useForm<SubmitHouseFormData>({
     resolver: zodResolver(submitHouseSchema),
     defaultValues: {
-      house_number: "15",
-      house_address: "Tielensstraat",
-      start_date: new Date().toISOString().slice(0, 16),
+      house_number: "",
+      house_address: "",
+      start_date: "",
       house_latitude: "",
       house_longitude: "",
       photo: [],
