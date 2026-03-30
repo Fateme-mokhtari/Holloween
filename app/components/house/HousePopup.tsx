@@ -46,15 +46,12 @@ export default function HousePopup({ house }: { house: Houses }) {
       </div>
 
       <div className="relative z-10 p-3">
-        <h3 className="font-creepster text-lg text-purple-300">
-          {t("houseAddress")}:
-        </h3>
+        <h3 className=" text-lg text-purple-300">{t("houseAddress")}:</h3>
         <span className="mt-1 block text-sm text-gray-300">
           {house.address} {house.number}
         </span>
-        <h3 className="mt-2 font-creepster text-lg text-purple-300">
-          {t("startDate")}:
-        </h3>
+        <h3 className="mt-2 text-lg text-purple-300">{t("startDate")}:</h3>
+
         <span className="mt-1 block text-sm text-gray-300">
           {house.start_date.toLocaleString()}
         </span>

@@ -153,7 +153,7 @@ export default function Map({ houses, zones, center }: MapProps) {
         {isPlacingHouse && (
           <div
             className=" right-2000 
-           rounded-xl border border-orange-500 bg-gray-900/95 px-3 py-2 text-sm font-semibold text-orange-300 shadow-lg"
+           rounded-xl border border-orange-500 bg-gray-900/95 px-4 py-3 text-xl font-creepster text-orange-300 shadow-lg"
           >
             {t("clickToMark")}
           </div>
