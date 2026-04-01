@@ -21,8 +21,8 @@ A Next.js web application for mapping and showcasing Halloween scare zones and h
 ## Getting Started
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
