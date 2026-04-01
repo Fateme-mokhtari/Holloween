@@ -1,9 +1,7 @@
+import { InputHTMLAttributes } from "react";
+import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
-import { InputHTMLAttributes } from 'react';
-import { UseFormRegisterReturn, FieldError } from 'react-hook-form';
-
-interface TextFieldProps
-  extends InputHTMLAttributes<HTMLInputElement> {
+interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   register?: UseFormRegisterReturn;
   error?: FieldError;
   label?: string;
@@ -26,13 +24,11 @@ export default function TextField({
       <input
         {...(register || {})}
         {...props}
-        className={`w-full bg-black/50 border border-purple-800 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors ${
-          error ? 'border-red-500' : ''
-        } ${className || ''}`}
+        className={`w-full bg-black/50 border border-purple-800 rounded-lg p-3 text-base sm:text-sm text-white focus:outline-none focus:border-orange-500 transition-colors ${
+          error ? "border-red-500" : ""
+        } ${className || ""}`}
       />
-      {error && (
-        <p className="text-red-500 text-sm mt-1">{error.message}</p>
-      )}
+      {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
     </div>
   );
 }
