@@ -1,10 +1,14 @@
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL;
+
 type ApiRequestOptions = RequestInit;
 
 export const apiClient = {
   async request(endpoint: string, options: ApiRequestOptions = {}) {
-    const baseUrl = process.env.API_BASE_URL;
-    if (!baseUrl) {
-      throw new Error("Missing API base URL. Set API_BASE_URL.");
+    if (!BASE_URL) {
+      throw new Error(
+        "Missing API base URL. Set NEXT_PUBLIC_API_BASE_URL or API_BASE_URL.",
+      );
     }
 
     const adminToken = process.env.ADMIN_TOKEN;
@@ -17,7 +21,7 @@ export const apiClient = {
       pushToken: adminToken,
     };
 
-    const url = `${baseUrl}${endpoint}`;
+    const url = `${BASE_URL}${endpoint}`;
 
     // For FormData, don't set Content-Type header - browser handles it automatically
     const headers =
