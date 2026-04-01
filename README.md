@@ -2,6 +2,10 @@
 
 A Next.js web application for mapping and showcasing Halloween scare zones and haunted houses.
 
+## Demo
+
+Live app: https://holloween-alpha.vercel.app/
+
 ## Features
 
 - 🎃 Interactive map with house locations
