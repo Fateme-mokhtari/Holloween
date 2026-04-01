@@ -7,6 +7,16 @@ global.fetch = jest.fn();
 jest.spyOn(console, "error").mockImplementation(() => {});
 
 describe("apiClient", () => {
+  beforeAll(() => {
+    process.env.API_BASE_URL = "https://example.test";
+    process.env.ADMIN_TOKEN = "test-token";
+  });
+
+  afterAll(() => {
+    delete process.env.API_BASE_URL;
+    delete process.env.ADMIN_TOKEN;
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });

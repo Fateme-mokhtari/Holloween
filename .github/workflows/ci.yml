@@ -87,9 +87,7 @@ jobs:
 
       - name: Build
         env:
-          # Server-only secrets (never use NEXT_PUBLIC_ for tokens!)
+          # Server-side configuration
           API_BASE_URL: ${{ secrets.API_BASE_URL }}
           ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
-          # Public variables (safe for browser)
-          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.API_BASE_URL }}
         run: pnpm build

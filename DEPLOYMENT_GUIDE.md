@@ -12,7 +12,6 @@ Your Next.js project needs these preparation steps before deployment. This guide
 
 ```bash
 # API Configuration
-NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
 API_BASE_URL=http://localhost:3001
 ADMIN_TOKEN=your_admin_token_here
 ```
@@ -21,15 +20,13 @@ ADMIN_TOKEN=your_admin_token_here
 
 ```bash
 # API Configuration
-NEXT_PUBLIC_API_BASE_URL=https://your-api-domain.com
 API_BASE_URL=https://your-api-domain.com
 ADMIN_TOKEN=your_production_admin_token_here
 ```
 
 ### Key Points:
 
-- `NEXT_PUBLIC_*` = visible in browser (safe, non-secret data only)
-- Other variables = server-only (secret tokens, private keys)
+- Environment variables are server-only for this app's API client
 - Never commit `.env.local` or `.env.production` — add to `.gitignore` (already done)
 
 **❓ Where to get these values?**
@@ -108,7 +105,7 @@ Consider **Railway.app** or **Render.com** as modern Heroku alternatives.
 Your API client looks for:
 
 ```
-NEXT_PUBLIC_API_BASE_URL = https://your-api-domain.com
+API_BASE_URL = https://your-api-domain.com
 ```
 
 **You need to:**

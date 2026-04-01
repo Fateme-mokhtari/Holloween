@@ -1,20 +1,29 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL;
-
 type ApiRequestOptions = RequestInit;
-
-const defaultHeaders = {
-  'Content-Type': 'application/json',
-  'pushToken': process.env.ADMIN_TOKEN, 
-};
 
 export const apiClient = {
   async request(endpoint: string, options: ApiRequestOptions = {}) {
-    const url = `${BASE_URL}${endpoint}`;
-    
+    const baseUrl = process.env.API_BASE_URL;
+    if (!baseUrl) {
+      throw new Error("Missing API base URL. Set API_BASE_URL.");
+    }
+
+    const adminToken = process.env.ADMIN_TOKEN;
+    if (!adminToken) {
+      throw new Error("Missing ADMIN_TOKEN environment variable.");
+    }
+
+    const defaultHeaders = {
+      "Content-Type": "application/json",
+      pushToken: adminToken,
+    };
+
+    const url = `${baseUrl}${endpoint}`;
+
     // For FormData, don't set Content-Type header - browser handles it automatically
-    const headers = options.body instanceof FormData 
-      ? { 'pushToken': process.env.ADMIN_TOKEN }
-      : defaultHeaders;
+    const headers =
+      options.body instanceof FormData
+        ? { pushToken: adminToken }
+        : defaultHeaders;
 
     let response;
     try {
@@ -35,20 +44,25 @@ export const apiClient = {
     }
 
     if (!response.ok) {
-      console.error(`[apiClient] ${response.status} ${response.statusText}:`, responseData);
-      throw new Error(`API Error: ${response.status} - ${JSON.stringify(responseData)}`);
+      console.error(
+        `[apiClient] ${response.status} ${response.statusText}:`,
+        responseData,
+      );
+      throw new Error(
+        `API Error: ${response.status} - ${JSON.stringify(responseData)}`,
+      );
     }
 
     return responseData;
   },
 
   get(endpoint: string, options: ApiRequestOptions = {}) {
-    return this.request(endpoint, { method: 'GET', ...options });
+    return this.request(endpoint, { method: "GET", ...options });
   },
 
   post(endpoint: string, data: unknown, options: ApiRequestOptions = {}) {
     return this.request(endpoint, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(data),
       ...options,
     });
@@ -56,19 +70,23 @@ export const apiClient = {
 
   put(endpoint: string, data: unknown, options: ApiRequestOptions = {}) {
     return this.request(endpoint, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
       ...options,
     });
   },
 
   delete(endpoint: string, options: ApiRequestOptions = {}) {
-    return this.request(endpoint, { method: 'DELETE', ...options });
+    return this.request(endpoint, { method: "DELETE", ...options });
   },
 
-  postFormData(endpoint: string, formData: FormData, options: ApiRequestOptions = {}) {
+  postFormData(
+    endpoint: string,
+    formData: FormData,
+    options: ApiRequestOptions = {},
+  ) {
     return this.request(endpoint, {
-      method: 'POST',
+      method: "POST",
       body: formData,
       ...options,
     });
