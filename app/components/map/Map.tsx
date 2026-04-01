@@ -9,13 +9,13 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
-    MapContainer,
-    Marker,
-    Polygon,
-    Popup,
-    TileLayer,
-    useMap,
-    useMapEvents,
+  MapContainer,
+  Marker,
+  Polygon,
+  Popup,
+  TileLayer,
+  useMap,
+  useMapEvents,
 } from "react-leaflet";
 import Modal from "../common/Modal";
 import HousePopup from "../house/HousePopup";
@@ -144,7 +144,7 @@ export default function Map({ houses, zones, center }: MapProps) {
     };
   }, []);
   return (
-    <div className="h-[calc(100vh-60px)] w-full overflow-hidden relative">
+    <div className="h-[calc(100dvh-60px)] w-full overflow-hidden relative">
       <div className="absolute top-4 right-4 z-1000 flex gap-2">
         <MapButton text={t("markHouse")} icon="+" onClick={startHouseMarking} />
       </div>
@@ -163,7 +163,7 @@ export default function Map({ houses, zones, center }: MapProps) {
         center={[center.lat, center.lng]}
         zoom={15}
         className={isPlacingHouse ? "map-marking-mode" : ""}
-        style={{ height: "100vh", width: "100%" }}
+        style={{ height: "100%", width: "100%" }}
       >
         <MapClickHandler
           enabled={isPlacingHouse}

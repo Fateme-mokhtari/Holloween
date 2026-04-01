@@ -14,7 +14,7 @@ export default function TopMenu() {
   };
 
   return (
-    <header className=" top-0 w-full z-[1000] bg-purple-900 p-3 flex justify-between items-center text-white shadow-lg border-b border-orange-600/30">
+    <header className="sticky top-0 w-full z-[5000] bg-purple-900 p-3 flex justify-between items-center text-white shadow-lg border-b border-orange-600/30">
       {/* Left actions: email & admin */}
       <div className="flex items-center gap-4">
         <button
