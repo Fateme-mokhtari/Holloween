@@ -3,8 +3,9 @@
 import { addHousePhotoAction } from "@/app/actions/addHousePhotoAction";
 import { setErrorToast, setSuccessToast } from "@/app/components/common/Toast";
 import { Houses } from "@/types/houses";
+import { formatEventDate } from "@/util/formatEventDate";
 import { CameraIcon } from "@heroicons/react/24/outline";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type { SyntheticEvent } from "react";
 import { useState } from "react";
 import { FileUpload, Form, FormButton } from "../form";
@@ -12,6 +13,8 @@ import HousePhotoSlider from "./HousePhotoSlider";
 
 export default function HousePopup({ house }: { house: Houses }) {
   const t = useTranslations("HousePopup");
+  const locale = useLocale();
+  const startDate = formatEventDate(house.start_date, locale);
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
 
@@ -53,7 +56,7 @@ export default function HousePopup({ house }: { house: Houses }) {
         <h3 className="mt-2 text-lg text-purple-300">{t("startDate")}:</h3>
 
         <span className="mt-1 block text-sm text-gray-300">
-          {house.start_date.toLocaleString()}
+          {startDate ?? t("noStartDate")}
         </span>
 
         <Form

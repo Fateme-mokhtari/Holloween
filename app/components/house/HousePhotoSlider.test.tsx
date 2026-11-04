@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { Image as HouseImage, Source } from "@/types/houses";
+import { Image as HouseImage } from "@/types/houses";
 import { fireEvent, render, screen } from "@testing-library/react";
 import HousePhotoSlider from "./HousePhotoSlider";
 
@@ -43,8 +43,8 @@ jest.mock("next/image", () => ({
 // Helper: create mock images
 const createImages = (count: number): HouseImage[] =>
   Array.from({ length: count }, (_, i) => ({
-    house_id: 1,
-    source: Source.Owner,
+    participation_id: 1,
+    source: "owner",
     file: `https://example.com/photo${i + 1}.jpg`,
   }));
 

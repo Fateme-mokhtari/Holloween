@@ -142,29 +142,38 @@ jest.mock("@/app/components/form", () => ({
 
 // ---- Test data ----
 
+// Shaped like the real API response (dates are strings or null)
 const mockHouses: Houses[] = [
   {
     id: 1,
+    house_id: 1,
     number: "42",
     address: "Spooky Lane",
     postcode: null,
-    start_date: new Date("2025-10-31"),
+    start_date: "2025-10-31 18:00:00",
     end_date: null,
-    active: true,
+    year: 2025,
+    years: [2025],
     latitude: 51.98,
     longitude: 4.58,
+    horror_level: 2,
+    mobility_friendly: true,
     images: [],
   },
   {
     id: 2,
+    house_id: 2,
     number: "13",
     address: "Haunted Ave",
     postcode: null,
-    start_date: new Date("2025-10-25"),
+    start_date: null,
     end_date: null,
-    active: true,
+    year: 2025,
+    years: [2025],
     latitude: 51.92,
     longitude: 4.47,
+    horror_level: null,
+    mobility_friendly: false,
     images: [],
   },
 ];
@@ -172,16 +181,20 @@ const mockHouses: Houses[] = [
 const mockZones: Zones[] = [
   {
     id: 1,
+    zone_id: 1,
     name: "Downtown Horror",
-    start_date: new Date("2025-10-25"),
-    end_date: new Date("2025-11-01"),
+    start_date: "2025-10-25 18:00:00",
+    end_date: "2025-11-01 21:00:00",
+    year: 2025,
+    years: [2025],
     active: true,
     theme: "Zombies",
     description: "Watch out",
+    polygon_color: null,
     locations: [
-      { zone_id: 1, latitude: 51.91, longitude: 4.46 },
-      { zone_id: 1, latitude: 51.92, longitude: 4.47 },
-      { zone_id: 1, latitude: 51.91, longitude: 4.48 },
+      { participation_id: 1, latitude: 51.91, longitude: 4.46 },
+      { participation_id: 1, latitude: 51.92, longitude: 4.47 },
+      { participation_id: 1, latitude: 51.91, longitude: 4.48 },
     ],
     flyers: [],
     images: [],
@@ -256,8 +269,8 @@ describe("Map", () => {
         {
           ...mockZones[0],
           locations: [
-            { zone_id: 1, latitude: 51.91, longitude: 4.46 },
-            { zone_id: 1, latitude: 51.92, longitude: 4.47 },
+            { participation_id: 1, latitude: 51.91, longitude: 4.46 },
+            { participation_id: 1, latitude: 51.92, longitude: 4.47 },
           ],
         },
       ];

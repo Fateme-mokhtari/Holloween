@@ -28,6 +28,7 @@
   "HousePopup": {
     "houseAddress": "Huisadres",
     "startDate": "Startdatum",
+    "noStartDate": "Nog niet bekend",
     "choosePhoto": "Kies foto('s)",
     "uploadPhoto": "Foto uploaden",
     "uploading": "Uploaden...",

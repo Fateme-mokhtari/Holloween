@@ -6,9 +6,20 @@ global.fetch = jest.fn();
 // Suppress console.error in tests (apiClient logs errors)
 jest.spyOn(console, "error").mockImplementation(() => {});
 
+const ORIGINAL_ADMIN_TOKEN = process.env.ADMIN_TOKEN;
+
 describe("apiClient", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    // Assigning undefined to process.env stores the string "undefined", so delete instead
+    if (ORIGINAL_ADMIN_TOKEN === undefined) {
+      delete process.env.ADMIN_TOKEN;
+    } else {
+      process.env.ADMIN_TOKEN = ORIGINAL_ADMIN_TOKEN;
+    }
   });
 
   // ============================================
@@ -70,7 +81,34 @@ describe("apiClient", () => {
       );
     });
 
+    it("should send the pushToken header when ADMIN_TOKEN is set", async () => {
+      process.env.ADMIN_TOKEN = "test-token";
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({}),
+      });
+
+      await apiClient.request("/secure");
+
+      const headers = (global.fetch as jest.Mock).mock.calls[0][1].headers;
+      expect(headers.pushToken).toBe("test-token");
+    });
+
+    it("should not send a pushToken header when ADMIN_TOKEN is missing", async () => {
+      delete process.env.ADMIN_TOKEN;
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({}),
+      });
+
+      await apiClient.request("/secure");
+
+      const headers = (global.fetch as jest.Mock).mock.calls[0][1].headers;
+      expect(headers).not.toHaveProperty("pushToken");
+    });
+
     it("should omit Content-Type header for FormData bodies", async () => {
+      process.env.ADMIN_TOKEN = "test-token";
       const formData = new FormData();
       formData.append("key", "value");
 
@@ -86,7 +124,7 @@ describe("apiClient", () => {
       // Should NOT have Content-Type (browser sets it with boundary for FormData)
       expect(headers["Content-Type"]).toBeUndefined();
       // Should still have pushToken
-      expect(headers).toHaveProperty("pushToken");
+      expect(headers.pushToken).toBe("test-token");
     });
   });
 

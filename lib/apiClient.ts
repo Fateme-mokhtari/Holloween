@@ -2,20 +2,27 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 type ApiRequestOptions = RequestInit;
 
-const defaultHeaders = {
-  "Content-Type": "application/json",
-  pushToken: process.env.ADMIN_TOKEN,
-};
+function buildHeaders(body: RequestInit["body"]): Record<string, string> {
+  const headers: Record<string, string> = {};
+
+  // For FormData, don't set Content-Type header - browser adds it with the multipart boundary
+  if (!(body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  // Only send the token when it is set; otherwise fetch would send the text "undefined"
+  const token = process.env.ADMIN_TOKEN;
+  if (token) {
+    headers.pushToken = token;
+  }
+
+  return headers;
+}
 
 export const apiClient = {
   async request(endpoint: string, options: ApiRequestOptions = {}) {
     const url = `${BASE_URL}${endpoint}`;
-
-    // For FormData, don't set Content-Type header - browser handles it automatically
-    const headers =
-      options.body instanceof FormData
-        ? { pushToken: process.env.ADMIN_TOKEN }
-        : defaultHeaders;
+    const headers = buildHeaders(options.body);
 
     let response;
     try {
