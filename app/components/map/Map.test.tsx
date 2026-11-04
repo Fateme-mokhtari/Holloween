@@ -96,6 +96,8 @@ jest.mock("leaflet", () => ({
 // Mock next/image
 jest.mock("next/image", () => ({
   __esModule: true,
+  // A plain <img> is intentional in this test double; alt is passed through via props.
+  // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
   default: (props: Record<string, unknown>) => <img {...props} />,
 }));
 
