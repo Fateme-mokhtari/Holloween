@@ -49,6 +49,19 @@ const ghostMarkerIcon = L.icon({
   popupAnchor: [0, -20],
 });
 
+// CARTO basemaps require a (free) API key since Sept 2026; without one,
+// tiles show an "API KEY REQUIRED" notice. Get one at carto.com/basemaps/apikey.
+const CARTO_API_KEY = process.env.NEXT_PUBLIC_CARTO_API_KEY;
+const DARK_TILES_URL = `https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png${
+  CARTO_API_KEY ? `?key=${encodeURIComponent(CARTO_API_KEY)}` : ""
+}`;
+
+if (!CARTO_API_KEY && process.env.NODE_ENV !== "production") {
+  console.warn(
+    "[Map] NEXT_PUBLIC_CARTO_API_KEY is not set — map tiles will show an 'API KEY REQUIRED' notice.",
+  );
+}
+
 interface UserLocation {
   lat: number;
   lng: number;
@@ -172,8 +185,8 @@ export default function Map({ houses, zones, center }: MapProps) {
 
         {/* Dark themed tiles */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
-          attribution="&copy; OpenStreetMap, &copy; CartoDB"
+          url={DARK_TILES_URL}
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
 
         {/* Scare Zones */}
