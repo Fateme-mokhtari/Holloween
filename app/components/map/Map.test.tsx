@@ -26,8 +26,6 @@ let mapClickHandler:
   | undefined;
 
 // ============================================================
-// MY THINKING:
-//
 // Map.tsx uses react-leaflet which requires a real DOM with canvas,
 // tile rendering, etc. — none of that works in jsdom.
 //
@@ -68,8 +66,18 @@ jest.mock("react-leaflet", () => ({
   Popup: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="popup">{children}</div>
   ),
-  Polygon: ({ positions }: { positions: [number, number][] }) => (
-    <div data-testid="polygon" data-points={positions.length} />
+  Polygon: ({
+    positions,
+    pathOptions,
+  }: {
+    positions: [number, number][];
+    pathOptions?: { color?: string };
+  }) => (
+    <div
+      data-testid="polygon"
+      data-points={positions.length}
+      data-color={pathOptions?.color}
+    />
   ),
   useMapEvents: (
     handlers: Partial<{
@@ -225,7 +233,7 @@ describe("Map", () => {
   // ============================================
   // RENDERING HOUSES
   // ============================================
-  // MY THINKING: Each house should become a Marker on the map.
+  // Each house should become a Marker on the map.
   // If this breaks, houses become invisible to users.
 
   describe("house markers", () => {
@@ -253,7 +261,7 @@ describe("Map", () => {
   // ============================================
   // RENDERING ZONES
   // ============================================
-  // MY THINKING: Zones need >= 3 locations for a polygon.
+  // Zones need >= 3 locations for a polygon.
   // A zone with only 2 points should be skipped silently.
 
   describe("zone polygons", () => {
@@ -282,12 +290,38 @@ describe("Map", () => {
       render(<Map houses={[]} zones={[]} center={mockCenter} />);
       expect(screen.queryByTestId("polygon")).not.toBeInTheDocument();
     });
+
+    it("should only render active zones", () => {
+      const zones: Zones[] = [
+        mockZones[0],
+        { ...mockZones[0], id: 2, zone_id: 2, active: false },
+      ];
+      render(<Map houses={[]} zones={zones} center={mockCenter} />);
+      expect(screen.getAllByTestId("polygon")).toHaveLength(1);
+    });
+
+    it("should use the zone's polygon_color", () => {
+      const blueZone: Zones[] = [{ ...mockZones[0], polygon_color: "#0056D6" }];
+      render(<Map houses={[]} zones={blueZone} center={mockCenter} />);
+      expect(screen.getByTestId("polygon")).toHaveAttribute(
+        "data-color",
+        "#0056D6",
+      );
+    });
+
+    it("should fall back to the default colour when polygon_color is null", () => {
+      render(<Map houses={[]} zones={mockZones} center={mockCenter} />);
+      expect(screen.getByTestId("polygon")).toHaveAttribute(
+        "data-color",
+        "#ea580c",
+      );
+    });
   });
 
   // ============================================
   // MODAL — "Mark a Hount" button
   // ============================================
-  // MY THINKING: The button opens a modal with SubmitHouseForm.
+  // The button opens a modal with SubmitHouseForm.
   // This is the entry point for users to add houses.
   // If this breaks, no one can contribute.
 
@@ -332,7 +366,7 @@ describe("Map", () => {
   // ============================================
   // GEOLOCATION — User location tracking
   // ============================================
-  // MY THINKING: The component calls navigator.geolocation.watchPosition
+  // The component calls navigator.geolocation.watchPosition
   // on mount and clearWatch on unmount. When a position comes in,
   // a ghost marker should appear on the map.
   //

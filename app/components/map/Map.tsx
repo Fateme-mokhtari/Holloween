@@ -49,6 +49,9 @@ const ghostMarkerIcon = L.icon({
   popupAnchor: [0, -20],
 });
 
+// Used when a zone has no polygon_color from the API
+const DEFAULT_ZONE_COLOR = "#ea580c";
+
 // CARTO basemaps require a (free) API key since Sept 2026; without one,
 // tiles show an "API KEY REQUIRED" notice. Get one at carto.com/basemaps/apikey.
 const CARTO_API_KEY = process.env.NEXT_PUBLIC_CARTO_API_KEY;
@@ -189,20 +192,22 @@ export default function Map({ houses, zones, center }: MapProps) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
 
-        {/* Scare Zones */}
-        {zones.length > 0 &&
-          zones.map((zone) => {
+        {/* Scare Zones (only this year's active ones) */}
+        {zones
+          .filter((zone) => zone.active)
+          .map((zone) => {
             const zoneCoords = zone.locations.map(
               (loc) => [loc.latitude, loc.longitude] as [number, number],
             );
             if (zoneCoords.length < 3) return null; // Polygon needs at least 3 points
+            const color = zone.polygon_color ?? DEFAULT_ZONE_COLOR;
             return (
               <Polygon
                 key={zone.id}
                 positions={zoneCoords}
                 pathOptions={{
-                  color: "#ea580c",
-                  fillColor: "#7e22ce",
+                  color,
+                  fillColor: color,
                   fillOpacity: 0.4,
                   weight: 2,
                 }}
