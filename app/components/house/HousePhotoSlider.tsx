@@ -8,6 +8,30 @@ interface HousePhotoSliderProps {
   images: HouseImage[];
 }
 
+const VIDEO_FILE = /\.(mp4|webm|mov|m4v)$/i;
+
+// The API returns photos and videos in the same "images" list; only the file extension tells them apart
+function isVideo(file: string) {
+  return VIDEO_FILE.test(file.split("?")[0]);
+}
+
+function MediaItem({ file, label }: { file: string; label: string }) {
+  if (isVideo(file)) {
+    return (
+      <video
+        src={file}
+        aria-label={label}
+        controls
+        playsInline
+        preload="metadata"
+        className="absolute inset-0 h-full w-full bg-black object-contain"
+      />
+    );
+  }
+
+  return <Image src={file} alt={label} fill unoptimized className="object-cover" />;
+}
+
 export default function HousePhotoSlider({ images }: HousePhotoSliderProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -58,13 +82,7 @@ export default function HousePhotoSlider({ images }: HousePhotoSliderProps) {
   if (images.length === 1) {
     return (
       <div className="relative h-80 w-full overflow-hidden rounded-lg">
-        <Image
-          src={images[0].file}
-          alt="House photo"
-          fill
-          unoptimized
-          className="object-cover"
-        />
+        <MediaItem file={images[0].file} label="House photo" />
       </div>
     );
   }
@@ -75,12 +93,9 @@ export default function HousePhotoSlider({ images }: HousePhotoSliderProps) {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <Image
-        src={images[activeIndex].file}
-        alt={`House photo ${activeIndex + 1}`}
-        fill
-        unoptimized
-        className="object-cover"
+      <MediaItem
+        file={images[activeIndex].file}
+        label={`House photo ${activeIndex + 1}`}
       />
 
       {/* Navigation Buttons */}

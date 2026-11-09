@@ -3,7 +3,7 @@
 import { submitHouseAction } from "@/app/actions/submitHouseAction";
 import { setErrorToast, setSuccsessToast } from "@/app/components/common/Toast";
 import { SubmitHouseFormData, submitHouseSchema } from "@/types/submitHouse";
-import { CameraIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
+import { CameraIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -39,7 +39,6 @@ export default function SubmitHouseForm({
       house_latitude: "",
       house_longitude: "",
       photo: [],
-      video: [],
     },
   });
 
@@ -55,12 +54,7 @@ export default function SubmitHouseForm({
     try {
       setIsLoading(true);
 
-      const files: File[] = formData.photo ?? [];
-      if (files.length === 0) {
-        setErrorToast(t("selectPhotoError"));
-        return;
-      }
-
+      // zod has already checked there is at least one photo and the size limit
       const response = await submitHouseAction({
         house_number: formData.house_number,
         house_address: formData.house_address,
@@ -71,7 +65,7 @@ export default function SubmitHouseForm({
         house_longitude: formData.house_longitude
           ? parseFloat(formData.house_longitude)
           : center.lng,
-        media: files,
+        media: formData.photo,
       });
 
       if (response.result) {
@@ -122,16 +116,6 @@ export default function SubmitHouseForm({
           onFileChange={(files) => {
             const arr = files ? Array.from(files) : [];
             setValue("photo", arr, { shouldValidate: true });
-          }}
-        />
-        <FileUpload
-          label={t("uploadVideo")}
-          icon={<VideoCameraIcon className="w-5 h-5" />}
-          accept="video/*"
-          error={errors.video}
-          onFileChange={(files) => {
-            const arr = files ? Array.from(files) : [];
-            setValue("video", arr, { shouldValidate: true });
           }}
         />
         <FormButton isLoading={isLoading}>{t("placeOnMap")}</FormButton>

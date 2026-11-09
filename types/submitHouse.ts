@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+// Vercel rejects requests over 4.5 MB; stay under it to leave room for the other form fields
+export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+
+const totalSize = (files: File[] = []) =>
+  files.reduce((sum, file) => sum + file.size, 0);
+
 // Zod schema = single source of truth for validation + types
 export const submitHouseSchema = z.object({
   house_number: z.string().min(1, 'House number is required'),
@@ -9,8 +15,11 @@ export const submitHouseSchema = z.object({
   house_longitude: z.string().optional(),
   photo: z
     .custom<File[]>()
-    .refine((files) => files && files.length > 0, 'Please upload at least one photo'),
-  video: z.custom<File[]>().optional(),
+    .refine((files) => files && files.length > 0, 'Please upload at least one photo')
+    .refine(
+      (files) => totalSize(files) <= MAX_UPLOAD_BYTES,
+      'Photos are too large. Together they must be under 4 MB.',
+    ),
 });
 
 // Infer form input types directly from the schema

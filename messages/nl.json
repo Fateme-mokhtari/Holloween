@@ -13,7 +13,6 @@
     "houseAddressPlaceholder": "bijv. Tielensstraat",
     "startDate": "Startdatum",
     "uploadPhoto": "Foto uploaden",
-    "uploadVideo": "Video uploaden",
     "placeOnMap": "Op kaart plaatsen",
     "submitSuccess": "Huis succesvol ingediend! Het verschijnt op de kaart zodra het is goedgekeurd door een beheerder.",
     "geocodingError": "Kan geen coördinaten vinden voor het opgegeven adres.",

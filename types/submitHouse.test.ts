@@ -1,7 +1,13 @@
-import { submitHouseSchema } from "./submitHouse";
+import { MAX_UPLOAD_BYTES, submitHouseSchema } from "./submitHouse";
+
+// Creates a file that reports the given size without allocating that much memory
+const fileOfSize = (name: string, type: string, bytes: number) => {
+  const file = new File(["x"], name, { type });
+  Object.defineProperty(file, "size", { value: bytes });
+  return file;
+};
 
 // ============================================================
-// MY THINKING:
 // This schema is the GATEKEEPER between user input and our API.
 // If validation is wrong, either:
 //   - Bad data corrupts the database (too loose)
@@ -27,13 +33,12 @@ describe("submitHouseSchema", () => {
     house_latitude: "51.9807",
     house_longitude: "4.5808",
     photo: [new File(["fake"], "ghost.jpg", { type: "image/jpeg" })],
-    video: [],
   };
 
   // ============================================
   // HAPPY PATH
   // ============================================
-  // MY THINKING: Always start here. If valid data doesn't pass,
+  // Always start here. If valid data doesn't pass,
   // something fundamental is broken and all other tests are meaningless.
 
   describe("valid data", () => {
@@ -43,9 +48,8 @@ describe("submitHouseSchema", () => {
     });
 
     it("should accept data without optional fields", () => {
-      // MY THINKING: Users might not have lat/lng (geocoding failed)
-      // and might not upload a video. Schema should still pass.
-      const { house_latitude, house_longitude, video, ...required } = validData;
+      // Users might not have lat/lng (geocoding failed). Schema should still pass.
+      const { house_latitude, house_longitude, ...required } = validData;
       const result = submitHouseSchema.safeParse(required);
       expect(result.success).toBe(true);
     });
@@ -54,7 +58,7 @@ describe("submitHouseSchema", () => {
   // ============================================
   // REQUIRED FIELDS — house_number
   // ============================================
-  // MY THINKING: z.string().min(1) means the string can't be empty.
+  // z.string().min(1) means the string can't be empty.
   // But what about undefined/null/whitespace? Let's test all of them.
   // The user sees these error messages in the UI, so we verify them too.
 
@@ -79,7 +83,7 @@ describe("submitHouseSchema", () => {
       expect(result.success).toBe(false);
     });
 
-    // MY THINKING: min(1) only checks length, not content.
+    // min(1) only checks length, not content.
     // So " " (one space) has length 1 and WOULD pass.
     // This is a known Zod behavior — NOT a bug in the schema.
     // But it's worth documenting in a test so we know the behavior.
@@ -96,7 +100,7 @@ describe("submitHouseSchema", () => {
   // ============================================
   // REQUIRED FIELDS — house_address
   // ============================================
-  // MY THINKING: Same pattern as house_number. Same validation rule.
+  // Same pattern as house_number. Same validation rule.
   // I test it separately because they're DIFFERENT user-facing fields
   // with DIFFERENT error messages. If someone accidentally swaps them,
   // this test catches it.
@@ -126,7 +130,7 @@ describe("submitHouseSchema", () => {
   // ============================================
   // REQUIRED FIELDS — start_date
   // ============================================
-  // MY THINKING: Date is a string field (not Date object), because
+  // Date is a string field (not Date object), because
   // HTML date inputs return strings like "2025-10-31". This is correct.
   // We just need to ensure it's not empty.
 
@@ -151,7 +155,7 @@ describe("submitHouseSchema", () => {
       expect(result.success).toBe(false);
     });
 
-    // MY THINKING: The schema doesn't validate date FORMAT.
+    // The schema doesn't validate date FORMAT.
     // "banana" would pass as a valid start_date.
     // This is fine — format validation happens at the input level.
     // But this test DOCUMENTS that behavior.
@@ -167,7 +171,7 @@ describe("submitHouseSchema", () => {
   // ============================================
   // OPTIONAL FIELDS — lat/lng
   // ============================================
-  // MY THINKING: These are optional because geocoding might fail.
+  // These are optional because geocoding might fail.
   // The user shouldn't be blocked from submitting just because
   // we couldn't find their coordinates. We can fix it later.
   // Testing "optional" means: undefined, missing, or present all work.
@@ -195,7 +199,7 @@ describe("submitHouseSchema", () => {
   // ============================================
   // PHOTO VALIDATION — custom refine
   // ============================================
-  // MY THINKING: This is the TRICKIEST validation in the schema.
+  // This is the TRICKIEST validation in the schema.
   // z.custom<File[]>().refine(files => files && files.length > 0)
   //
   // The refine callback checks TWO things:
@@ -252,40 +256,9 @@ describe("submitHouseSchema", () => {
   });
 
   // ============================================
-  // VIDEO VALIDATION — optional
-  // ============================================
-  // MY THINKING: Video is optional. Users might not have a video
-  // of their haunted house. When present, z.custom<File[]>() doesn't
-  // do any special validation — it just accepts whatever.
-
-  describe("video validation", () => {
-    it("should accept when video is undefined", () => {
-      const { video, ...rest } = validData;
-      const result = submitHouseSchema.safeParse(rest);
-      expect(result.success).toBe(true);
-    });
-
-    it("should accept when video is an empty array", () => {
-      const result = submitHouseSchema.safeParse({
-        ...validData,
-        video: [],
-      });
-      expect(result.success).toBe(true);
-    });
-
-    it("should accept when video files are provided", () => {
-      const result = submitHouseSchema.safeParse({
-        ...validData,
-        video: [new File(["vid"], "tour.mp4", { type: "video/mp4" })],
-      });
-      expect(result.success).toBe(true);
-    });
-  });
-
-  // ============================================
   // MULTIPLE ERRORS AT ONCE
   // ============================================
-  // MY THINKING: When a user submits a completely empty form, they
+  // When a user submits a completely empty form, they
   // should see ALL errors at once, not one at a time. Zod's safeParse
   // collects all issues. This test verifies that behavior so the UI
   // can show all field errors simultaneously.
@@ -310,6 +283,42 @@ describe("submitHouseSchema", () => {
         expect(errorPaths).toContain("house_address");
         expect(errorPaths).toContain("start_date");
         expect(errorPaths).toContain("photo");
+      }
+    });
+  });
+
+  // ============================================
+  // TOTAL PHOTO SIZE
+  // ============================================
+  // Vercel rejects uploads over 4.5 MB, so all photos together
+  // must stay under MAX_UPLOAD_BYTES.
+
+  describe("total photo size", () => {
+    const halfLimit = MAX_UPLOAD_BYTES / 2;
+
+    it("should accept photos that together are exactly at the limit", () => {
+      const result = submitHouseSchema.safeParse({
+        ...validData,
+        photo: [
+          fileOfSize("a.jpg", "image/jpeg", halfLimit),
+          fileOfSize("b.jpg", "image/jpeg", halfLimit),
+        ],
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it("should reject photos that together are over the limit", () => {
+      const result = submitHouseSchema.safeParse({
+        ...validData,
+        photo: [
+          fileOfSize("a.jpg", "image/jpeg", halfLimit),
+          fileOfSize("b.jpg", "image/jpeg", halfLimit + 1),
+        ],
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].path).toEqual(["photo"]);
+        expect(result.error.issues[0].message).toMatch(/too large/);
       }
     });
   });

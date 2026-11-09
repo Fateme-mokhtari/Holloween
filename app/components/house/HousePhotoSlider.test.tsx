@@ -4,8 +4,6 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import HousePhotoSlider from "./HousePhotoSlider";
 
 // ============================================================
-// MY THINKING:
-//
 // This component has 3 DISTINCT render modes:
 //   1. images.length === 0 → "No photos available" message
 //   2. images.length === 1 → Single image, NO navigation buttons
@@ -52,7 +50,7 @@ describe("HousePhotoSlider", () => {
   // ============================================
   // MODE 1: No images
   // ============================================
-  // MY THINKING: Empty state is what users see when a house
+  // Empty state is what users see when a house
   // has been submitted but no photos uploaded yet.
   // This MUST render gracefully, not crash.
 
@@ -71,7 +69,7 @@ describe("HousePhotoSlider", () => {
   // ============================================
   // MODE 2: Single image
   // ============================================
-  // MY THINKING: With only 1 photo, prev/next buttons make no sense.
+  // With only 1 photo, prev/next buttons make no sense.
   // The component returns early with just the image — no slider UI.
 
   describe("when there is exactly one image", () => {
@@ -96,7 +94,7 @@ describe("HousePhotoSlider", () => {
   // ============================================
   // MODE 3: Multiple images — Navigation
   // ============================================
-  // MY THINKING: This is the core functionality.
+  // This is the core functionality.
   // The slider starts at index 0, and clicking next/prev
   // changes the displayed image. I detect changes via the alt text:
   //   "House photo 1", "House photo 2", etc.
@@ -121,7 +119,7 @@ describe("HousePhotoSlider", () => {
     });
 
     // ---- NEXT BUTTON ----
-    // MY THINKING: The next button's SVG has path "M9 5l7 7-7 7"
+    // The next button's SVG has path "M9 5l7 7-7 7"
     // (right chevron). It's the second button in DOM order.
 
     it("should go to next image when clicking next button", () => {
@@ -150,7 +148,7 @@ describe("HousePhotoSlider", () => {
     });
 
     // ---- PREV BUTTON ----
-    // MY THINKING: The prev button's SVG has path "M15 19l-7-7 7-7"
+    // The prev button's SVG has path "M15 19l-7-7 7-7"
     // (left chevron). It's the first button in DOM order.
 
     it("should wrap to last image when clicking prev on first image", () => {
@@ -182,7 +180,7 @@ describe("HousePhotoSlider", () => {
   // ============================================
   // TOUCH SWIPE — Mobile interactions
   // ============================================
-  // MY THINKING: This is a mobile-specific feature.
+  // This is a mobile-specific feature.
   // The component tracks touchStart X coordinate, then on touchEnd
   // calculates deltaX. Threshold is 40px:
   //   - deltaX > 40  → swipe right → goPrevious
@@ -231,7 +229,7 @@ describe("HousePhotoSlider", () => {
       expect(screen.getByAltText("House photo 1")).toBeInTheDocument();
     });
 
-    // MY THINKING: Small accidental touches shouldn't navigate.
+    // Small accidental touches shouldn't navigate.
     // The threshold is 40px — anything less is ignored.
     it("should ignore swipes smaller than 40px threshold", () => {
       render(<HousePhotoSlider images={images} />);
@@ -247,6 +245,39 @@ describe("HousePhotoSlider", () => {
 
       // Should still be on photo 1
       expect(screen.getByAltText("House photo 1")).toBeInTheDocument();
+    });
+  });
+
+  // ============================================
+  // VIDEOS
+  // ============================================
+  // The API returns videos in the same list as photos.
+  // A video rendered as <img> shows up as a broken image.
+
+  describe("videos", () => {
+    const video: HouseImage = {
+      participation_id: 1,
+      source: "sender",
+      file: "https://example.com/clip.mp4",
+    };
+
+    it("should render a video player for .mp4 files", () => {
+      const { container } = render(<HousePhotoSlider images={[video]} />);
+      const player = container.querySelector("video");
+      expect(player).toHaveAttribute("src", "https://example.com/clip.mp4");
+      expect(player).toHaveAttribute("controls");
+      expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    });
+
+    it("should switch between a photo and a video in the slider", () => {
+      const { container } = render(
+        <HousePhotoSlider images={[...createImages(1), video]} />,
+      );
+      expect(container.querySelector("video")).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getAllByRole("button")[1]); // next
+      expect(container.querySelector("video")).toBeInTheDocument();
+      expect(screen.getByText("2 / 2")).toBeInTheDocument();
     });
   });
 });
