@@ -76,9 +76,9 @@ export default function SubmitHouseForm({
         setErrorToast(response.message || t("submissionError"));
       }
     } catch (error) {
-      setErrorToast(
-        error instanceof Error ? error.message : t("submissionError"),
-      );
+      // Never show raw technical errors to users; log them for debugging instead
+      console.error("[SubmitHouseForm] Submission failed:", error);
+      setErrorToast(t("submissionError"));
     } finally {
       setIsLoading(false);
     }

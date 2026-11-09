@@ -3,6 +3,7 @@
 import { addHousePhotoAction } from "@/app/actions/addHousePhotoAction";
 import { setErrorToast, setSuccessToast } from "@/app/components/common/Toast";
 import { Houses } from "@/types/houses";
+import { photosSchema } from "@/types/submitHouse";
 import { formatEventDate } from "@/util/formatEventDate";
 import { CameraIcon } from "@heroicons/react/24/outline";
 import { useLocale, useTranslations } from "next-intl";
@@ -26,13 +27,26 @@ export default function HousePopup({ house }: { house: Houses }) {
       return;
     }
 
+    // Check type and size before uploading, so the user gets a clear message right away
+    const photos = photosSchema.safeParse(Array.from(selectedFiles));
+    if (!photos.success) {
+      setErrorToast(photos.error.issues[0].message);
+      return;
+    }
+
     setUploading(true);
 
     try {
-      await addHousePhotoAction(house.id, Array.from(selectedFiles));
-      setSuccessToast(t("uploadSuccess"));
-      setSelectedFiles(null);
-    } catch {
+      const response = await addHousePhotoAction(house.id, photos.data);
+      if (response.result) {
+        setSuccessToast(t("uploadSuccess"));
+        setSelectedFiles(null);
+      } else {
+        setErrorToast(response.message || t("uploadError"));
+      }
+    } catch (error) {
+      // Never show raw technical errors to users; log them for debugging instead
+      console.error("[HousePopup] Upload failed:", error);
       setErrorToast(t("uploadError"));
     } finally {
       setUploading(false);

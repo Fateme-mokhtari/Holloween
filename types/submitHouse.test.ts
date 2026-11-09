@@ -226,6 +226,29 @@ describe("submitHouseSchema", () => {
       }
     });
 
+    it("should reject files that are not images", () => {
+      const result = submitHouseSchema.safeParse({
+        ...validData,
+        photo: [
+          new File(["fake"], "ghost.jpg", { type: "image/jpeg" }),
+          new File(["%PDF"], "letter.pdf", { type: "application/pdf" }),
+        ],
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        const error = result.error.issues.find((i) => i.path[0] === "photo");
+        expect(error?.message).toBe("Only image files are allowed");
+      }
+    });
+
+    it("should reject values that are not files", () => {
+      const result = submitHouseSchema.safeParse({
+        ...validData,
+        photo: ["ghost.jpg"],
+      });
+      expect(result.success).toBe(false);
+    });
+
     it("should reject when photo is undefined", () => {
       const result = submitHouseSchema.safeParse({
         ...validData,

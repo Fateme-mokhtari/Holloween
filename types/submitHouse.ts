@@ -6,6 +6,19 @@ export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 const totalSize = (files: File[] = []) =>
   files.reduce((sum, file) => sum + file.size, 0);
 
+// Rules for uploaded photos, shared by the form (browser) and the server actions (server)
+export const photosSchema = z
+  .array(z.instanceof(File))
+  .min(1, 'Please upload at least one photo')
+  .refine(
+    (files) => files.every((file) => file.type.startsWith('image/')),
+    'Only image files are allowed',
+  )
+  .refine(
+    (files) => totalSize(files) <= MAX_UPLOAD_BYTES,
+    'Photos are too large. Together they must be under 4 MB.',
+  );
+
 // Zod schema = single source of truth for validation + types
 export const submitHouseSchema = z.object({
   house_number: z.string().min(1, 'House number is required'),
@@ -13,27 +26,27 @@ export const submitHouseSchema = z.object({
   start_date: z.string().min(1, 'Start date is required'),
   house_latitude: z.string().optional(),
   house_longitude: z.string().optional(),
-  photo: z
-    .custom<File[]>()
-    .refine((files) => files && files.length > 0, 'Please upload at least one photo')
-    .refine(
-      (files) => totalSize(files) <= MAX_UPLOAD_BYTES,
-      'Photos are too large. Together they must be under 4 MB.',
-    ),
+  photo: photosSchema,
 });
 
 // Infer form input types directly from the schema
 export type SubmitHouseFormData = z.infer<typeof submitHouseSchema>;
 
-// Request type for the API function (after form data is processed)
-export interface SubmitHouseRequest {
-  house_number: string;
-  house_address: string;
-  start_date: string;
-  house_latitude: number;
-  house_longitude: number;
-  media: File[];
-}
+// Server-side rules for the request the server action receives (after the form has processed it).
+// Server actions are public endpoints, so this runs again on the server even though the form checked it.
+export const submitHouseRequestSchema = z.object({
+  house_number: z.string().trim().min(1, 'House number is required').max(20, 'House number is too long'),
+  house_address: z.string().trim().min(1, 'House address is required').max(200, 'House address is too long'),
+  start_date: z
+    .string()
+    .regex(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$/, 'Start date has an invalid format'),
+  house_latitude: z.number().min(-90).max(90),
+  house_longitude: z.number().min(-180).max(180),
+  media: photosSchema,
+});
+
+// Request type for the API function, generated from the schema so the two can't drift apart
+export type SubmitHouseRequest = z.infer<typeof submitHouseRequestSchema>;
 
 export interface SubmitHouseResponse {
   result: boolean;

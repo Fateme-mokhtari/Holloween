@@ -98,6 +98,21 @@ describe("SubmitHouseForm", () => {
       expect(await screen.findByText(/Photos are too large/)).toBeInTheDocument();
       expect(mockSubmitHouseAction).not.toHaveBeenCalled();
     });
+
+    // accept="image/*" is only a hint: in the file picker a user can switch to
+    // "All Files" and choose a PDF. The backend rejected it with a raw 500 error.
+    it("shows an error and sends nothing when a non-image file is chosen", async () => {
+      const pdf = new File(["%PDF"], "letter.pdf", { type: "application/pdf" });
+
+      const { container } = renderForm();
+      fillInForm(container, [pdf]);
+      submit();
+
+      expect(
+        await screen.findByText("Only image files are allowed"),
+      ).toBeInTheDocument();
+      expect(mockSubmitHouseAction).not.toHaveBeenCalled();
+    });
   });
 
   // Video upload was removed: Vercel's 4.5 MB request limit makes it useless.
