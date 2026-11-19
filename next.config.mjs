@@ -4,6 +4,7 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   experimental: {
     serverActions: {
       // Match Vercel's 4.5 MB request limit so local runs fail the same way production does
