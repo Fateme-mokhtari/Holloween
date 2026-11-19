@@ -112,3 +112,51 @@ jobs:
           path: map-app.zip
           archive: false
           retention-days: 7
+
+  # Job 3: Deploy runs only for pushes to main, after a successful build
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Never run two deploys at the same time
+    concurrency: deploy-production
+    steps:
+      - name: Download the app
+        uses: actions/download-artifact@v8
+        with:
+          name: map-app.zip
+          # We unzip it ourselves below, so pnpm's links stay links
+          skip-decompress: true
+
+      - name: Unzip the app
+        run: |
+          unzip -q map-app.zip -d app
+          test -f app/server.js
+
+      - name: Set up SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      # Copy only what changed into map-app and remove our old files there,
+      # but never touch cPanel's tmp folder or the error log
+      - name: Upload to the server
+        env:
+          SSH_TARGET: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+        run: >
+          rsync -az --delete
+          --exclude /tmp/ --exclude /stderr.log
+          -e "ssh -p 21098 -i ~/.ssh/deploy_key"
+          app/ "$SSH_TARGET:map-app/"
+
+      # The server restarts the app when this file changes
+      - name: Restart the app
+        env:
+          SSH_TARGET: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+        run: ssh -p 21098 -i ~/.ssh/deploy_key "$SSH_TARGET" "touch map-app/tmp/restart.txt"
